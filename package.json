@@ -1,0 +1,19 @@
+{
+  "name": "parrot-app",
+  "version": "0.0.0",
+  "description": "React frontend to use parrot web service",
+  "main": "Gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nsarno/parrot-app.git"
+  },
+  "author": "Arnaud Mesureur",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nsarno/parrot-app/issues"
+  },
+  "homepage": "https://github.com/nsarno/parrot-app"
+}
