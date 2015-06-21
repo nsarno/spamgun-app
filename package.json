@@ -17,7 +17,10 @@
   },
   "homepage": "https://github.com/nsarno/parrot-app",
   "dependencies": {
+    "events": "^1.0.2",
+    "flux": "^2.0.3",
     "jquery": "^2.1.4",
+    "keymirror": "^0.1.1",
     "react": "^0.13.3",
     "react-document-title": "^1.0.2",
     "react-router": "^0.13.3",

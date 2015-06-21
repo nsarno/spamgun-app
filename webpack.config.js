@@ -1,8 +1,15 @@
 var path = require('path');
 
-var entry_path = path.resolve(path.join('scripts', 'components', 'App.jsx'));
+var entry_path = path.resolve(path.join(__dirname, 'scripts', 'components', 'App.jsx'));
 var dist_path = path.resolve('dist');
-var components_path = path.resolve(path.join('scripts', 'components'));
+var root = [
+  path.resolve(path.join(__dirname, 'scripts', 'components')),
+  path.resolve(path.join(__dirname, 'scripts', 'stores')),
+  path.resolve(path.join(__dirname, 'scripts', 'dispatcher')),
+  path.resolve(path.join(__dirname, 'scripts', 'clients')),
+  path.resolve(path.join(__dirname, 'scripts', 'actions')),
+  path.resolve(path.join(__dirname, 'scripts', 'constants'))
+];
 
 var config = {
   entry: entry_path,
@@ -11,7 +18,7 @@ var config = {
     filename: 'bundle.js'
   },
   resolve: {
-    root: components_path,
+    root: root,
     extensions: ['', '.js', '.jsx']
   },
   module: {

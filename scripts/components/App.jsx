@@ -5,6 +5,8 @@ var Route = Router.Route;
 var DefaultRoute = Router.DefaultRoute;
 var RouteHandler = Router.RouteHandler;
 
+var Dashboard = require('Dashboard');
+
 var App = React.createClass({
   render: function() {
     return (
