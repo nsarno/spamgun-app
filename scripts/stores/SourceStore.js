@@ -28,12 +28,49 @@ var SourceStore = _.assign({}, EventEmitter.prototype, {
     this.loading = false;
     this.error = null;
     this.sources = payload.sources;
+    this.sources = payload.sources.reduce(function(acc, source) {
+      var id = _.uniqueId();
+      acc[id] = { id: id, data: source, status: 'ok' };
+      return acc;
+    }, {});
     this.emit(Constants.CHANGE);
   },
 
   onLoadSourcesError: function(payload) {
     this.loading = false;
     this.error = payload.error;
+    this.emit(Constants.CHANGE);
+  },
+
+  onAddSource: function(payload) {
+    this.sources[payload.id] = { id: payload.id, data: payload.source, status: 'adding' };
+    this.emit(Constants.CHANGE);
+  },
+
+  onAddSourceSuccess: function(payload) {
+    this.sources[payload.id].status = 'ok';
+    this.emit(Constants.CHANGE);
+  },
+
+  onAddSourceError: function(payload) {
+    this.sources[payload.id].status = 'error';
+    this.sources[payload.id].error = payload.error;
+    this.emit(Constants.CHANGE);
+  },
+
+  onRemoveSource: function(payload) {
+    this.sources[payload.id].status = 'removing';
+    this.emit(Constants.CHANGE);
+  },
+
+  onRemoveSourceSuccess: function(payload) {
+    delete this.sources[payload.id]
+    this.emit(Constants.CHANGE);
+  },
+
+  onRemoveSourceError: function(payload) {
+    this.sources[payload.id].status = 'error';
+    this.sources[payload.id].error = payload.error;
     this.emit(Constants.CHANGE);
   }
 
@@ -42,7 +79,7 @@ var SourceStore = _.assign({}, EventEmitter.prototype, {
 Dispatcher.register(function(payload) {
   switch(payload.type) {
     case Constants.LOAD_SOURCES:
-      SourceStore.onLoadSources(payload.data);
+      SourceStore.onLoadSources();
       break;
 
     case Constants.LOAD_SOURCES_SUCCESS:
@@ -51,6 +88,30 @@ Dispatcher.register(function(payload) {
 
     case Constants.LOAD_SOURCES_ERROR:
       SourceStore.onLoadSourcesError(payload.data);
+      break;
+
+    case Constants.ADD_SOURCE:
+      SourceStore.onAddSource(payload.data);
+      break;
+
+    case Constants.ADD_SOURCE_SUCCESS:
+      SourceStore.onAddSourceSuccess(payload.data);
+      break;
+
+    case Constants.ADD_SOURCE_ERROR:
+      SourceStore.onAddSourceError(payload.data);
+      break;
+
+    case Constants.REMOVE_SOURCE:
+      SourceStore.onRemoveSource(payload.data);
+      break;
+
+    case Constants.REMOVE_SOURCE_SUCCESS:
+      SourceStore.onRemoveSourceSuccess(payload.data);
+      break;
+
+    case Constants.REMOVE_SOURCE_ERROR:
+      SourceStore.onRemoveSourceError(payload.data);
       break;
 
     default:

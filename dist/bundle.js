@@ -23570,44 +23570,71 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var DocumentTitle = __webpack_require__(197);
-	var SourceStore = __webpack_require__(199);
-	var DashboardActions = __webpack_require__(207);
+
+	var SourceStore = __webpack_require__(197);
+	var DashboardActions = __webpack_require__(205);
+
+	var DocumentTitle = __webpack_require__(207);
+	var SourceWidget = __webpack_require__(209);
 
 	var Dashboard = React.createClass({
 	  displayName: 'Dashboard',
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      sources: SourceStore.getSources()
+	      sources: SourceStore.getSources(),
+	      list_url: 'http://www.leboncoin.fr/voitures/offres/ile_de_france/?rs=2008&me=100000&f=p',
+	      form_url: 'http://www2.leboncoin.fr/ar/form/0',
+	      form_name: 'James Kilroy',
+	      form_email: '1i36xe+8pgk9bpdtb7rs@sharklasers.com',
+	      form_body: 'Ce message a été envoyé automatiquement, vous pouvez l\'ignorer.'
 	    };
 	  },
 
 	  componentDidMount: function componentDidMount() {
-	    SourceStore.addChangeListener(this._onChange);
+	    SourceStore.addChangeListener(this.onSourceChange);
 
 	    DashboardActions.loadSources();
 	  },
 
 	  componentWillUnmount: function componentWillUnmount() {
 
-	    SourceStore.removeChangeListener(this._onChange);
+	    SourceStore.removeChangeListener(this.onSourceChange);
 	  },
 
-	  _onChange: function _onChange() {
+	  onSourceChange: function onSourceChange() {
 	    this.setState({
 	      sources: SourceStore.getSources()
 	    });
 	  },
 
-	  render: function render() {
-	    var sources = _.map(this.state.sources, function (source) {
-	      return React.createElement(
-	        'li',
-	        { className: 'list-group-item' },
-	        source
-	      );
+	  handleSubmit: function handleSubmit(event) {
+	    event.preventDefault();
+	    DashboardActions.addSource({
+	      source: {
+	        list_url: this.state.list_url,
+	        form_url: this.state.form_url,
+	        form_name: this.state.form_name,
+	        form_email: this.state.form_email,
+	        form_body: this.state.form_body
+	      }
 	    });
+	  },
+
+	  handleRemoveSource: function handleRemoveSource(id) {
+	    DashboardActions.removeSource(this.state.sources[id]);
+	  },
+
+	  handleChange: function handleChange(event) {
+	    var state = {};
+	    state[event.target.id] = event.target.value;
+	    this.setState(state);
+	  },
+
+	  render: function render() {
+	    var sources = _.map(this.state.sources, (function (source) {
+	      return React.createElement(SourceWidget, { key: source.id, source: source, handleRemoveSource: this.handleRemoveSource });
+	    }).bind(this));
 
 	    return React.createElement(
 	      'div',
@@ -23618,22 +23645,39 @@
 	        null,
 	        'Dashboard'
 	      ),
+	      sources,
 	      React.createElement(
-	        'div',
-	        { className: 'panel panel-default' },
+	        'form',
+	        { className: 'form-inline', onSubmit: this.handleSubmit },
 	        React.createElement(
 	          'div',
-	          { className: 'panel-heading' },
-	          'Sources'
+	          { className: 'form-group' },
+	          React.createElement('input', { onChange: this.handleChange, type: 'text', className: 'form-control', id: 'list_url', placeholder: 'List URL' })
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'panel-body' },
-	          React.createElement(
-	            'ul',
-	            { className: 'list-group' },
-	            sources
-	          )
+	          { className: 'form-group' },
+	          React.createElement('input', { onChange: this.handleChange, type: 'text', className: 'form-control', id: 'form_url', placeholder: 'Form URL' })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement('input', { onChange: this.handleChange, type: 'text', className: 'form-control', id: 'name', placeholder: 'Name' })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement('input', { onChange: this.handleChange, type: 'text', className: 'form-control', id: 'email', placeholder: 'email' })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement('input', { onChange: this.handleChange, type: 'text', className: 'form-control', id: 'body', placeholder: 'message' })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement('input', { onChange: this.handleChange, type: 'submit', className: 'form-control' })
 	        )
 	      )
 	    );
@@ -23648,122 +23692,9 @@
 
 	'use strict';
 
-	var React = __webpack_require__(1),
-	    createSideEffect = __webpack_require__(198);
-
-	var _serverTitle = null;
-
-	function getTitleFromPropsList(propsList) {
-	  var innermostProps = propsList[propsList.length - 1];
-	  if (innermostProps) {
-	    return innermostProps.title;
-	  }
-	}
-
-	var DocumentTitle = createSideEffect(function handleChange(propsList) {
-	  var title = getTitleFromPropsList(propsList);
-
-	  if (typeof document !== 'undefined') {
-	    document.title = title || '';
-	  } else {
-	    _serverTitle = title || null;
-	  }
-	}, {
-	  displayName: 'DocumentTitle',
-
-	  propTypes: {
-	    title: React.PropTypes.string.isRequired
-	  },
-
-	  statics: {
-	    peek: function () {
-	      return _serverTitle;
-	    },
-
-	    rewind: function () {
-	      var title = _serverTitle;
-	      this.dispose();
-	      return title;
-	    }
-	  }
-	});
-
-	module.exports = DocumentTitle;
-
-/***/ },
-/* 198 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1),
-	    invariant = __webpack_require__(7),
-	    shallowEqual = __webpack_require__(137);
-
-	function createSideEffect(onChange, mixin) {
-	  invariant(
-	    typeof onChange === 'function',
-	    'onChange(propsList) is a required argument.'
-	  );
-
-	  var mountedInstances = [];
-
-	  function emitChange() {
-	    onChange(mountedInstances.map(function (instance) {
-	      return instance.props;
-	    }));
-	  }
-
-	  return React.createClass({
-	    mixins: [mixin],
-
-	    statics: {
-	      dispose: function () {
-	        mountedInstances = [];
-	        emitChange();
-	      }
-	    },
-
-	    shouldComponentUpdate: function (nextProps) {
-	      return !shallowEqual(nextProps, this.props);
-	    },
-
-	    componentWillMount: function () {
-	      mountedInstances.push(this);
-	      emitChange();
-	    },
-
-	    componentDidUpdate: function () {
-	      emitChange();
-	    },
-
-	    componentWillUnmount: function () {
-	      var index = mountedInstances.indexOf(this);
-	      mountedInstances.splice(index, 1);
-	      emitChange();
-	    },
-
-	    render: function () {
-	      if (this.props.children) {
-	        return React.Children.only(this.props.children);
-	      } else {
-	        return null;
-	      }
-	    }
-	  });
-	}
-
-	module.exports = createSideEffect;
-
-/***/ },
-/* 199 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Dispatcher = __webpack_require__(200);
-	var Constants = __webpack_require__(204);
-	var EventEmitter = __webpack_require__(206).EventEmitter;
+	var Dispatcher = __webpack_require__(198);
+	var Constants = __webpack_require__(202);
+	var EventEmitter = __webpack_require__(204).EventEmitter;
 
 	var SourceStore = _.assign({}, EventEmitter.prototype, {
 	  loading: false,
@@ -23791,12 +23722,49 @@
 	    this.loading = false;
 	    this.error = null;
 	    this.sources = payload.sources;
+	    this.sources = payload.sources.reduce(function (acc, source) {
+	      var id = _.uniqueId();
+	      acc[id] = { id: id, data: source, status: 'ok' };
+	      return acc;
+	    }, {});
 	    this.emit(Constants.CHANGE);
 	  },
 
 	  onLoadSourcesError: function onLoadSourcesError(payload) {
 	    this.loading = false;
 	    this.error = payload.error;
+	    this.emit(Constants.CHANGE);
+	  },
+
+	  onAddSource: function onAddSource(payload) {
+	    this.sources[payload.id] = { id: payload.id, data: payload.source, status: 'adding' };
+	    this.emit(Constants.CHANGE);
+	  },
+
+	  onAddSourceSuccess: function onAddSourceSuccess(payload) {
+	    this.sources[payload.id].status = 'ok';
+	    this.emit(Constants.CHANGE);
+	  },
+
+	  onAddSourceError: function onAddSourceError(payload) {
+	    this.sources[payload.id].status = 'error';
+	    this.sources[payload.id].error = payload.error;
+	    this.emit(Constants.CHANGE);
+	  },
+
+	  onRemoveSource: function onRemoveSource(payload) {
+	    this.sources[payload.id].status = 'removing';
+	    this.emit(Constants.CHANGE);
+	  },
+
+	  onRemoveSourceSuccess: function onRemoveSourceSuccess(payload) {
+	    delete this.sources[payload.id];
+	    this.emit(Constants.CHANGE);
+	  },
+
+	  onRemoveSourceError: function onRemoveSourceError(payload) {
+	    this.sources[payload.id].status = 'error';
+	    this.sources[payload.id].error = payload.error;
 	    this.emit(Constants.CHANGE);
 	  }
 
@@ -23805,7 +23773,7 @@
 	Dispatcher.register(function (payload) {
 	  switch (payload.type) {
 	    case Constants.LOAD_SOURCES:
-	      SourceStore.onLoadSources(payload.data);
+	      SourceStore.onLoadSources();
 	      break;
 
 	    case Constants.LOAD_SOURCES_SUCCESS:
@@ -23816,6 +23784,30 @@
 	      SourceStore.onLoadSourcesError(payload.data);
 	      break;
 
+	    case Constants.ADD_SOURCE:
+	      SourceStore.onAddSource(payload.data);
+	      break;
+
+	    case Constants.ADD_SOURCE_SUCCESS:
+	      SourceStore.onAddSourceSuccess(payload.data);
+	      break;
+
+	    case Constants.ADD_SOURCE_ERROR:
+	      SourceStore.onAddSourceError(payload.data);
+	      break;
+
+	    case Constants.REMOVE_SOURCE:
+	      SourceStore.onRemoveSource(payload.data);
+	      break;
+
+	    case Constants.REMOVE_SOURCE_SUCCESS:
+	      SourceStore.onRemoveSourceSuccess(payload.data);
+	      break;
+
+	    case Constants.REMOVE_SOURCE_ERROR:
+	      SourceStore.onRemoveSourceError(payload.data);
+	      break;
+
 	    default:
 	      return true;
 	  }
@@ -23824,16 +23816,16 @@
 	module.exports = SourceStore;
 
 /***/ },
-/* 200 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Dispatcher = __webpack_require__(201).Dispatcher;
+	var Dispatcher = __webpack_require__(199).Dispatcher;
 	module.exports = new Dispatcher();
 
 /***/ },
-/* 201 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -23845,11 +23837,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Dispatcher = __webpack_require__(202)
+	module.exports.Dispatcher = __webpack_require__(200)
 
 
 /***/ },
-/* 202 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -23866,7 +23858,7 @@
 
 	"use strict";
 
-	var invariant = __webpack_require__(203);
+	var invariant = __webpack_require__(201);
 
 	var _lastID = 1;
 	var _prefix = 'ID_';
@@ -24105,7 +24097,7 @@
 
 
 /***/ },
-/* 203 */
+/* 201 */
 /***/ function(module, exports) {
 
 	/**
@@ -24164,23 +24156,31 @@
 
 
 /***/ },
-/* 204 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var keymirror = __webpack_require__(205);
+	var keymirror = __webpack_require__(203);
 
 	module.exports = keymirror({
 	  CHANGE: null,
 
 	  LOAD_SOURCES: null,
 	  LOAD_SOURCES_SUCCESS: null,
-	  LOAD_SOURCES_FAILURE: null
+	  LOAD_SOURCES_FAILURE: null,
+
+	  ADD_SOURCE: null,
+	  ADD_SOURCE_SUCCESS: null,
+	  ADD_SOURCE_FAILURE: null,
+
+	  REMOVE_SOURCE: null,
+	  REMOVE_SOURCE_SUCCESS: null,
+	  REMOVE_SOURCE_FAILURE: null
 	});
 
 /***/ },
-/* 205 */
+/* 203 */
 /***/ function(module, exports) {
 
 	/**
@@ -24239,7 +24239,7 @@
 
 
 /***/ },
-/* 206 */
+/* 204 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -24546,27 +24546,67 @@
 
 
 /***/ },
-/* 207 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Dispatcher = __webpack_require__(200);
-	var Constants = __webpack_require__(204);
-	var ParrotClient = __webpack_require__(208);
+	var Dispatcher = __webpack_require__(198);
+	var Constants = __webpack_require__(202);
+	var ParrotClient = __webpack_require__(206);
 
 	var DashboardActions = {
 	  loadSources: function loadSources() {
 	    Dispatcher.dispatch({ type: Constants.LOAD_SOURCES });
-	    ParrotClient.loadSources((function (sources) {
+	    ParrotClient.loadSources(function (sources) {
 	      Dispatcher.dispatch({
 	        type: Constants.LOAD_SOURCES_SUCCESS,
 	        data: { sources: sources }
 	      });
-	    }).bind(this), (function (error) {
+	    }, function (error) {
 	      Dispatcher.dispatch({
 	        type: Constants.LOAD_SOURCES_FAILURE,
 	        data: { error: error }
+	      });
+	    });
+	  },
+
+	  addSource: function addSource(source) {
+	    var id = _.uniqueId();
+
+	    Dispatcher.dispatch({
+	      type: Constants.ADD_SOURCE,
+	      data: { id: id, source: source }
+	    });
+	    ParrotClient.addSource(source, (function (source) {
+	      Dispatcher.dispatch({
+	        type: Constants.ADD_SOURCE_SUCCESS,
+	        data: { id: id, source: source }
+	      });
+	    }).bind(this), (function (error) {
+	      Dispatcher.dispatch({
+	        type: Constants.ADD_SOURCE_FAILURE,
+	        data: { id: id, error: error }
+	      });
+	    }).bind(this));
+	  },
+
+	  removeSource: function removeSource(source) {
+	    var id = source.id;
+
+	    Dispatcher.dispatch({
+	      type: Constants.REMOVE_SOURCE,
+	      data: source
+	    });
+	    ParrotClient.removeSource(source, (function () {
+	      Dispatcher.dispatch({
+	        type: Constants.REMOVE_SOURCE_SUCCESS,
+	        data: { id: id }
+	      });
+	    }).bind(this), (function (error) {
+	      Dispatcher.dispatch({
+	        type: Constants.ADD_SOURCE_FAILURE,
+	        data: { id: id, error: error }
 	      });
 	    }).bind(this));
 	  }
@@ -24575,22 +24615,223 @@
 	module.exports = DashboardActions;
 
 /***/ },
-/* 208 */
+/* 206 */
 /***/ function(module, exports) {
 
 	"use strict";
 
 	var ParrotClient = {
 	  loadSources: function loadSources(success, failure) {
-	    $.get("https://parrot-api.herokuapp.com/sources").done(function (data) {
-	      success(data);
-	    }).fail(function (data) {
-	      failure(data);
-	    });
+	    $.get("https://parrot-api.herokuapp.com/sources").done(success).fail(failure);
+	  },
+
+	  addSource: function addSource(data, success, failure) {
+	    $.post("https://parrot-api.herokuapp.com/sources", data).done(success).fail(failure);
+	  },
+
+	  removeSource: function removeSource(source, success, failure) {
+	    console.log(source);
+	    $.ajax({
+	      type: "DELETE",
+	      url: "https://parrot-api.herokuapp.com/sources/" + source.data.id
+	    }).done(success).fail(failure);
 	  }
 	};
 
 	module.exports = ParrotClient;
+
+/***/ },
+/* 207 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1),
+	    createSideEffect = __webpack_require__(208);
+
+	var _serverTitle = null;
+
+	function getTitleFromPropsList(propsList) {
+	  var innermostProps = propsList[propsList.length - 1];
+	  if (innermostProps) {
+	    return innermostProps.title;
+	  }
+	}
+
+	var DocumentTitle = createSideEffect(function handleChange(propsList) {
+	  var title = getTitleFromPropsList(propsList);
+
+	  if (typeof document !== 'undefined') {
+	    document.title = title || '';
+	  } else {
+	    _serverTitle = title || null;
+	  }
+	}, {
+	  displayName: 'DocumentTitle',
+
+	  propTypes: {
+	    title: React.PropTypes.string.isRequired
+	  },
+
+	  statics: {
+	    peek: function () {
+	      return _serverTitle;
+	    },
+
+	    rewind: function () {
+	      var title = _serverTitle;
+	      this.dispose();
+	      return title;
+	    }
+	  }
+	});
+
+	module.exports = DocumentTitle;
+
+/***/ },
+/* 208 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1),
+	    invariant = __webpack_require__(7),
+	    shallowEqual = __webpack_require__(137);
+
+	function createSideEffect(onChange, mixin) {
+	  invariant(
+	    typeof onChange === 'function',
+	    'onChange(propsList) is a required argument.'
+	  );
+
+	  var mountedInstances = [];
+
+	  function emitChange() {
+	    onChange(mountedInstances.map(function (instance) {
+	      return instance.props;
+	    }));
+	  }
+
+	  return React.createClass({
+	    mixins: [mixin],
+
+	    statics: {
+	      dispose: function () {
+	        mountedInstances = [];
+	        emitChange();
+	      }
+	    },
+
+	    shouldComponentUpdate: function (nextProps) {
+	      return !shallowEqual(nextProps, this.props);
+	    },
+
+	    componentWillMount: function () {
+	      mountedInstances.push(this);
+	      emitChange();
+	    },
+
+	    componentDidUpdate: function () {
+	      emitChange();
+	    },
+
+	    componentWillUnmount: function () {
+	      var index = mountedInstances.indexOf(this);
+	      mountedInstances.splice(index, 1);
+	      emitChange();
+	    },
+
+	    render: function () {
+	      if (this.props.children) {
+	        return React.Children.only(this.props.children);
+	      } else {
+	        return null;
+	      }
+	    }
+	  });
+	}
+
+	module.exports = createSideEffect;
+
+/***/ },
+/* 209 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var getLocation = function getLocation(href) {
+	  var l = document.createElement('a');
+	  l.href = href;
+	  return l;
+	};
+
+	var Table = React.createClass({
+	  displayName: 'Table',
+
+	  render: function render() {
+	    var rows = _.map(this.props.data, function (row, index) {
+	      return React.createElement(
+	        'tr',
+	        { key: index },
+	        React.createElement(
+	          'th',
+	          null,
+	          row[0]
+	        ),
+	        React.createElement(
+	          'td',
+	          null,
+	          row[1]
+	        )
+	      );
+	    });
+
+	    return React.createElement(
+	      'table',
+	      { className: 'table table-hover' },
+	      React.createElement(
+	        'tbody',
+	        null,
+	        rows
+	      )
+	    );
+	  }
+	});
+
+	var SourceWidget = React.createClass({
+	  displayName: 'SourceWidget',
+
+	  render: function render() {
+	    var listURL = getLocation(this.props.source.data.list_url);
+	    var title = listURL.hostname;
+	    var tableData = this.props.source.data;
+	    var id = this.props.source.id;
+
+	    return React.createElement(
+	      'div',
+	      { className: 'panel panel-default' },
+	      React.createElement(
+	        'div',
+	        { className: 'panel-heading' },
+	        title,
+	        React.createElement(
+	          'a',
+	          { onClick: this.props.handleRemoveSource.bind(null, id) },
+	          React.createElement('i', { className: 'fa fa-remove' })
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'panel-body' },
+	        React.createElement(Table, { data: [['List URL', tableData.list_url], ['Form URL', tableData.form_url], ['Form name', tableData.form_name], ['Form email', tableData.form_email], ['Form body', tableData.form_body]] })
+	      )
+	    );
+	  }
+	});
+
+	module.exports = SourceWidget;
 
 /***/ }
 /******/ ]);
