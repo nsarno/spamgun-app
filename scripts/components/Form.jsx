@@ -21,13 +21,17 @@ var Field = React.createClass({
 
 var Input = React.createClass({
   render: function() {
+    console.log(this.props.handleChange);
     return (
       <Field label={this.props.label}>
         <input
           className="form-control"
           id={this.props.id}
           type={this.props.type}
-          placeholder={this.props.placeholder} />
+          placeholder={this.props.placeholder}
+          onChange={this.props.handleChange}
+          value={this.props.value}
+        />
       </Field>
     );
   }
@@ -40,7 +44,10 @@ var Textarea = React.createClass({
         <textarea
           className="form-control"
           id={this.props.id}
-          placeholder={this.props.placeholder} />
+          placeholder={this.props.placeholder}
+          onChange={this.props.handleChange}
+          value={this.props.value}
+        />
       </Field>
     );
   }
@@ -75,8 +82,12 @@ var Form = React.createClass({
   render: function() {
     var formFields = _.map(this.props.fields, function(field, index) {
       var component = fieldToComponent(field.type);
-      return component(_.merge(field, { key: index }));
-    });
+      var componentProps = _.merge(field, { 
+        handleChange: this.props.handleChange,
+        key: index
+      });
+      return component(componentProps);
+    }.bind(this));
 
     return (
       <form className="form-horizontal" onSubmit={this.props.handleSubmit}>

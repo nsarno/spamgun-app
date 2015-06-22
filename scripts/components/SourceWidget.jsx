@@ -34,21 +34,27 @@ var SourceWidget = React.createClass({
     var title = listURL.hostname;
     var tableData = this.props.source.data;
     var id = this.props.source.id;
-    var removeLink = (
-      <a onClick={this.props.handleRemoveSource.bind(null, id)}><i className="fa fa-remove"></i></a>
-    );
 
     return (
-      <Widget title={title} links={removeLink}>
-        <Table data={
-          [
+      <Widget title={title}>
+        <Table data={[
             ['List URL', tableData.list_url],
             ['Form URL', tableData.form_url],
             ['Form name', tableData.form_name],
             ['Form email', tableData.form_email],
             ['Form body', tableData.form_body],
-          ]
-        } />
+          ]}
+        />
+      <button className="btn btn-default btn-primary" onClick={this.props.handleRunScrapper.bind(null, id)}>
+        Run scrapper
+      </button>
+      <button className="btn btn-default btn-primary" onClick={this.props.handleRunSpammer.bind(null, id)}>
+        <i className="fa fa-send"></i> Run spammer
+      </button>
+
+      <button className="btn btn-default btn-danger pull-right" onClick={this.props.handleRemoveSource.bind(null, id)}>
+        <i className="fa fa-trash"></i> Destroy
+      </button>
       </Widget>
     );
   }

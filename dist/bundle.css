@@ -1,4 +1,4 @@
-{"version":3,"sources":["app.scss"],"names":[],"mappings":"AAKsB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AAC9C,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AACxB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AACxB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AACxB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AACxB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE,CALC;EACvB,UAAU,EAAE,CAAE,GADU;;AAI1B,CAAC,CAAC;EACA,MAAM,EAAE,OAAQ,GADf;;AAIH,QAAQ,CAAC;EACP,KAAK,EAAE,IAAK;EACZ,UAAU,EAAE,MAAO;EACnB,SAAS,EAAE,IAAK;EAChB,WAAW,EAAE,IAAK;EAClB,cAAc,EAAE,IAAK,GALb;EAOR,QAAQ,CAAC,CAAC,CAAR;IACA,YAAY,EAAE,IAAK,GADlB","file":"app.css","sourcesContent":[".table > tbody > tr > td,\n.table > tbody > tr > th,\n.table > tfoot > tr > td,\n.table > tfoot > tr > th,\n.table > thead > tr > td,\n.table > thead > tr > th {\n  border-top: 0;\n}\n\na {\n  cursor: pointer;\n}\n\n.spinner {\n  width: 100%;\n  text-align: center;\n  font-size: 25px;\n  padding-top: 50px;\n  padding-bottom: 50px;\n\n  i {\n    margin-right: 15px;\n  }\n}\n\n#dashboard {\n\n}\n"],"sourceRoot":"/source/"}
+{"version":3,"sources":["app.scss"],"names":[],"mappings":"AAKsB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AAC9C,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AACxB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AACxB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AACxB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AACxB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE,CALC;EACvB,UAAU,EAAE,CAAE,GADU;;AAI1B,CAAC,CAAC;EACA,MAAM,EAAE,OAAQ,GADf;;AAIH,QAAQ,CAAC;EACP,KAAK,EAAE,IAAK;EACZ,UAAU,EAAE,MAAO;EACnB,SAAS,EAAE,IAAK;EAChB,WAAW,EAAE,IAAK;EAClB,cAAc,EAAE,IAAK,GALb;EAOR,QAAQ,CAAC,CAAC,CAAR;IACA,YAAY,EAAE,IAAK,GADlB;;AAMH,MAAM,GAAG,WAAW,CAAC,IAAI,CAApB;EACH,YAAY,EAAE,GAAI,GADd;;AAKR,UAAU,CAAC;EACT,aAAa,EAAE,KAAM,GADX","file":"app.css","sourcesContent":[".table > tbody > tr > td,\n.table > tbody > tr > th,\n.table > tfoot > tr > td,\n.table > tfoot > tr > th,\n.table > thead > tr > td,\n.table > thead > tr > th {\n  border-top: 0;\n}\n\na {\n  cursor: pointer;\n}\n\n.spinner {\n  width: 100%;\n  text-align: center;\n  font-size: 25px;\n  padding-top: 50px;\n  padding-bottom: 50px;\n\n  i {\n    margin-right: 15px;\n  }\n}\n\n.panel > .panel-body {\n  .btn {\n    margin-right: 5px;\n  }\n}\n\n#dashboard {\n  margin-bottom: 150px;\n}\n"],"sourceRoot":"/source/"}
 .table > tbody > tr > td,
 .table > tbody > tr > th,
 .table > tfoot > tr > td,
@@ -18,5 +18,11 @@ a {
   padding-bottom: 50px; }
   .spinner i {
     margin-right: 15px; }
+
+.panel > .panel-body .btn {
+  margin-right: 5px; }
+
+#dashboard {
+  margin-bottom: 150px; }
 
 /*# sourceMappingURL=app.css.map */

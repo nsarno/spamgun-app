@@ -23,14 +23,14 @@ var DashboardActions = {
     );
   },
 
-  addSource: function(source) {
+  addSource: function(data) {
     var id = _.uniqueId();
 
     Dispatcher.dispatch({
       type: Constants.ADD_SOURCE,
-      data: { id: id, source: source }
+      data: { id: id, source: data.source }
     });
-    ParrotClient.addSource(source,
+    ParrotClient.addSource(data,
       function(source) {
         Dispatcher.dispatch({
           type: Constants.ADD_SOURCE_SUCCESS,

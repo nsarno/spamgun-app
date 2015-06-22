@@ -23,6 +23,12 @@ a {
   }
 }
 
-#dashboard {
+.panel > .panel-body {
+  .btn {
+    margin-right: 5px;
+  }
+}
 
+#dashboard {
+  margin-bottom: 150px;
 }

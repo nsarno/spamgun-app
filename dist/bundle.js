@@ -23586,11 +23586,13 @@
 	    return {
 	      sources: SourceStore.getSources(),
 	      addingSource: false,
-	      list_url: 'http://www.leboncoin.fr/voitures/offres/ile_de_france/?rs=2008&me=100000&f=p',
-	      form_url: 'http://www2.leboncoin.fr/ar/form/0',
-	      form_name: 'James Kilroy',
-	      form_email: '1i36xe+8pgk9bpdtb7rs@sharklasers.com',
-	      form_body: 'Ce message a été envoyé automatiquement, vous pouvez l\'ignorer.'
+	      formValues: {
+	        list_url: 'http://www.leboncoin.fr/voitures/offres/ile_de_france/?rs=2008&me=100000&f=p',
+	        form_url: 'http://www2.leboncoin.fr/ar/form/0',
+	        form_name: 'James Kilroy',
+	        form_email: '1i36xe+8pgk9bpdtb7rs@sharklasers.com',
+	        form_body: 'Ce message a été envoyé automatiquement, vous pouvez l\'ignorer.'
+	      }
 	    };
 	  },
 
@@ -23611,28 +23613,19 @@
 	    });
 	  },
 
-	  handleAddSource: function handleAddSource(e) {
-	    this.setState({
-	      addingSource: true
-	    });
+	  handleShowForm: function handleShowForm() {
+	    this.setState({ addingSource: true });
 	  },
 
-	  handleCancelSource: function handleCancelSource(e) {
-	    this.setState({
-	      addingSource: false
-	    });
+	  handleHideForm: function handleHideForm() {
+	    this.setState({ addingSource: false });
 	  },
 
 	  handleSubmit: function handleSubmit(event) {
 	    event.preventDefault();
+	    this.handleHideForm();
 	    DashboardActions.addSource({
-	      source: {
-	        list_url: this.state.list_url,
-	        form_url: this.state.form_url,
-	        form_name: this.state.form_name,
-	        form_email: this.state.form_email,
-	        form_body: this.state.form_body
-	      }
+	      source: this.state.formValues
 	    });
 	  },
 
@@ -23640,20 +23633,28 @@
 	    DashboardActions.removeSource(this.state.sources[id]);
 	  },
 
+	  handleRunScrapper: function handleRunScrapper(id) {},
+
+	  handleRunSpammer: function handleRunSpammer(id) {},
+
 	  handleChange: function handleChange(event) {
-	    var state = {};
-	    state[event.target.id] = event.target.value;
+	    var state = { formValues: this.state.formValues };
+	    state['formValues'][event.target.id] = event.target.value;
 	    this.setState(state);
 	  },
 
 	  render: function render() {
 	    var newSourceLink = React.createElement(
 	      'a',
-	      { onClick: this.handleAddSource },
-	      'add source'
+	      { onClick: this.handleShowForm },
+	      'new source'
 	    );
-	    var sourceForm = React.createElement(SourceForm, { handleSubmit: this.handleSubmit, handleCancelSource: this.handleCancelSource });
-
+	    var sourceForm = React.createElement(SourceForm, {
+	      handleSubmit: this.handleSubmit,
+	      handleHideForm: this.handleHideForm,
+	      handleChange: this.handleChange,
+	      values: this.state.formValues
+	    });
 	    var spinner = React.createElement(
 	      'div',
 	      { className: 'spinner' },
@@ -23664,9 +23665,15 @@
 	        'Loading sources...'
 	      )
 	    );
-
 	    var sources = _.map(this.state.sources, (function (source) {
-	      return React.createElement(SourceWidget, { key: source.id, source: source, handleRemoveSource: this.handleRemoveSource });
+	      return React.createElement(SourceWidget, {
+	        key: source.id,
+	        source: source,
+	        handleEditSource: this.handleEditSource,
+	        handleRemoveSource: this.handleRemoveSource,
+	        handleRunScrapper: this.handleRunScrapper,
+	        handleRunSpammer: this.handleRunSpammer
+	      });
 	    }).bind(this));
 
 	    return React.createElement(
@@ -23743,6 +23750,7 @@
 
 	  onAddSourceSuccess: function onAddSourceSuccess(payload) {
 	    this.sources[payload.id].status = 'ok';
+	    this.sources[payload.id].data = payload.source;
 	    this.emit(Constants.CHANGE);
 	  },
 
@@ -24571,14 +24579,14 @@
 	    });
 	  },
 
-	  addSource: function addSource(source) {
+	  addSource: function addSource(data) {
 	    var id = _.uniqueId();
 
 	    Dispatcher.dispatch({
 	      type: Constants.ADD_SOURCE,
-	      data: { id: id, source: source }
+	      data: { id: id, source: data.source }
 	    });
-	    ParrotClient.addSource(source, (function (source) {
+	    ParrotClient.addSource(data, (function (source) {
 	      Dispatcher.dispatch({
 	        type: Constants.ADD_SOURCE_SUCCESS,
 	        data: { id: id, source: source }
@@ -24809,16 +24817,29 @@
 	    var title = listURL.hostname;
 	    var tableData = this.props.source.data;
 	    var id = this.props.source.id;
-	    var removeLink = React.createElement(
-	      'a',
-	      { onClick: this.props.handleRemoveSource.bind(null, id) },
-	      React.createElement('i', { className: 'fa fa-remove' })
-	    );
 
 	    return React.createElement(
 	      Widget,
-	      { title: title, links: removeLink },
-	      React.createElement(Table, { data: [['List URL', tableData.list_url], ['Form URL', tableData.form_url], ['Form name', tableData.form_name], ['Form email', tableData.form_email], ['Form body', tableData.form_body]] })
+	      { title: title },
+	      React.createElement(Table, { data: [['List URL', tableData.list_url], ['Form URL', tableData.form_url], ['Form name', tableData.form_name], ['Form email', tableData.form_email], ['Form body', tableData.form_body]]
+	      }),
+	      React.createElement(
+	        'button',
+	        { className: 'btn btn-default btn-primary', onClick: this.props.handleRunScrapper.bind(null, id) },
+	        'Run scrapper'
+	      ),
+	      React.createElement(
+	        'button',
+	        { className: 'btn btn-default btn-primary', onClick: this.props.handleRunSpammer.bind(null, id) },
+	        React.createElement('i', { className: 'fa fa-send' }),
+	        ' Run spammer'
+	      ),
+	      React.createElement(
+	        'button',
+	        { className: 'btn btn-default btn-danger pull-right', onClick: this.props.handleRemoveSource.bind(null, id) },
+	        React.createElement('i', { className: 'fa fa-trash' }),
+	        ' Destroy'
+	      )
 	    );
 	  }
 	});
@@ -24881,16 +24902,15 @@
 	    var placeholderFormURL = 'http://www2.leboncoin.fr/ar/form/0';
 	    var cancelLink = React.createElement(
 	      'a',
-	      { onClick: this.props.handleCancelSource },
+	      { onClick: this.props.handleHideForm },
 	      React.createElement('i', { className: 'fa fa-remove' })
 	    );
-	    console.log(this.props.handleCancelSource);
-	    var fields = [{ label: 'List URL', id: 'list_url', placeholder: placeholderListURL, type: 'url' }, { label: 'Form URL', id: 'form_url', placeholder: placeholderFormURL, type: 'url' }, { label: 'Name', id: 'name', placeholder: 'John Doe', type: 'text' }, { label: 'Email', id: 'email', placeholder: 'john.doe@example.net', type: 'email' }, { label: 'Message', id: 'message', placeholder: 'Hi, ...', type: 'textarea' }, { type: 'submit', id: 'submit', name: 'Add' }];
+	    var fields = [{ label: 'List URL', id: 'list_url', placeholder: placeholderListURL, type: 'url', value: this.props.values.list_url }, { label: 'Form URL', id: 'form_url', placeholder: placeholderFormURL, type: 'url', value: this.props.values.form_url }, { label: 'Name', id: 'form_name', placeholder: 'John Doe', type: 'text', value: this.props.values.form_name }, { label: 'Email', id: 'form_email', placeholder: 'john.doe@example.net', type: 'email', value: this.props.values.form_email }, { label: 'Message', id: 'form_body', placeholder: 'Hi, ...', type: 'textarea', value: this.props.values.form_body }, { type: 'submit', id: 'submit', name: 'Add' }];
 
 	    return React.createElement(
 	      Widget,
 	      { title: 'Add source', links: cancelLink },
-	      React.createElement(Form, { handleSubmit: this.props.handleSubmit, fields: fields })
+	      React.createElement(Form, { handleSubmit: this.props.handleSubmit, handleChange: this.props.handleChange, fields: fields })
 	    );
 	  }
 	});
@@ -24932,6 +24952,7 @@
 	  displayName: "Input",
 
 	  render: function render() {
+	    console.log(this.props.handleChange);
 	    return React.createElement(
 	      Field,
 	      { label: this.props.label },
@@ -24939,7 +24960,10 @@
 	        className: "form-control",
 	        id: this.props.id,
 	        type: this.props.type,
-	        placeholder: this.props.placeholder })
+	        placeholder: this.props.placeholder,
+	        onChange: this.props.handleChange,
+	        value: this.props.value
+	      })
 	    );
 	  }
 	});
@@ -24954,7 +24978,10 @@
 	      React.createElement("textarea", {
 	        className: "form-control",
 	        id: this.props.id,
-	        placeholder: this.props.placeholder })
+	        placeholder: this.props.placeholder,
+	        onChange: this.props.handleChange,
+	        value: this.props.value
+	      })
 	    );
 	  }
 	});
@@ -24994,10 +25021,14 @@
 	  displayName: "Form",
 
 	  render: function render() {
-	    var formFields = _.map(this.props.fields, function (field, index) {
+	    var formFields = _.map(this.props.fields, (function (field, index) {
 	      var component = fieldToComponent(field.type);
-	      return component(_.merge(field, { key: index }));
-	    });
+	      var componentProps = _.merge(field, {
+	        handleChange: this.props.handleChange,
+	        key: index
+	      });
+	      return component(componentProps);
+	    }).bind(this));
 
 	    return React.createElement(
 	      "form",

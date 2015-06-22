@@ -13,11 +13,13 @@ var Dashboard = React.createClass({
     return {
       sources: SourceStore.getSources(),
       addingSource: false,
-      list_url: "http://www.leboncoin.fr/voitures/offres/ile_de_france/?rs=2008&me=100000&f=p",
-      form_url: "http://www2.leboncoin.fr/ar/form/0",
-      form_name: "James Kilroy",
-      form_email: "1i36xe+8pgk9bpdtb7rs@sharklasers.com",
-      form_body: "Ce message a été envoyé automatiquement, vous pouvez l'ignorer.",
+      formValues: {
+        list_url: "http://www.leboncoin.fr/voitures/offres/ile_de_france/?rs=2008&me=100000&f=p",
+        form_url: "http://www2.leboncoin.fr/ar/form/0",
+        form_name: "James Kilroy",
+        form_email: "1i36xe+8pgk9bpdtb7rs@sharklasers.com",
+        form_body: "Ce message a été envoyé automatiquement, vous pouvez l'ignorer."
+      }
     }
   },
 
@@ -38,28 +40,19 @@ var Dashboard = React.createClass({
     });
   },
 
-  handleAddSource: function(e) {
-    this.setState({
-      addingSource: true
-    });
+  handleShowForm: function() {
+    this.setState({ addingSource: true });
   },
 
-  handleCancelSource: function(e) {
-    this.setState({
-      addingSource: false
-    });
+  handleHideForm: function() {
+    this.setState({ addingSource: false });
   },
 
   handleSubmit: function(event) {
     event.preventDefault();
+    this.handleHideForm();
     DashboardActions.addSource({ 
-      source: {
-        list_url: this.state.list_url,
-        form_url: this.state.form_url,
-        form_name: this.state.form_name,
-        form_email: this.state.form_email,
-        form_body: this.state.form_body
-      }
+      source: this.state.formValues
     });
   },
 
@@ -67,26 +60,44 @@ var Dashboard = React.createClass({
     DashboardActions.removeSource(this.state.sources[id]);
   },
 
+  handleRunScrapper: function(id) {
+  },
+
+  handleRunSpammer: function(id) {
+  },
+
   handleChange: function(event) {
-    var state = {}
-    state[event.target.id] = event.target.value;
+    var state = { formValues: this.state.formValues };
+    state['formValues'][event.target.id] = event.target.value;
     this.setState(state);
   },
 
   render: function() {
-    var newSourceLink = <a onClick={this.handleAddSource}>add source</a>;
-    var sourceForm = <SourceForm handleSubmit={this.handleSubmit} handleCancelSource={this.handleCancelSource} />;
-
+    var newSourceLink = <a onClick={this.handleShowForm}>new source</a>;
+    var sourceForm = (
+      <SourceForm
+        handleSubmit={this.handleSubmit}
+        handleHideForm={this.handleHideForm}
+        handleChange={this.handleChange}
+        values={this.state.formValues}
+      />
+    );
     var spinner = (
       <div className="spinner">
         <i className="fa fa-refresh fa-spin"></i>
         <span>Loading sources...</span>
       </div>
     );
-
     var sources = _.map(this.state.sources, function(source) {
       return (
-        <SourceWidget key={source.id} source={source} handleRemoveSource={this.handleRemoveSource} />
+        <SourceWidget
+          key={source.id}
+          source={source}
+          handleEditSource={this.handleEditSource}
+          handleRemoveSource={this.handleRemoveSource} 
+          handleRunScrapper={this.handleRunScrapper}
+          handleRunSpammer={this.handleRunSpammer}
+        />
       );
     }.bind(this));
 

@@ -49,6 +49,7 @@ var SourceStore = _.assign({}, EventEmitter.prototype, {
 
   onAddSourceSuccess: function(payload) {
     this.sources[payload.id].status = 'ok';
+    this.sources[payload.id].data = payload.source;
     this.emit(Constants.CHANGE);
   },
 
