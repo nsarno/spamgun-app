@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var Widget = require('Widget');
 
 var getLocation = function(href) {
   var l = document.createElement("a");
@@ -20,7 +21,7 @@ var Table = React.createClass({
     });
 
     return (
-      <table className="table table-hover">
+      <table className="table borderless">
         <tbody>
           {rows}
         </tbody>
@@ -35,25 +36,22 @@ var SourceWidget = React.createClass({
     var title = listURL.hostname;
     var tableData = this.props.source.data;
     var id = this.props.source.id;
+    var removeLink = (
+      <a onClick={this.props.handleRemoveSource.bind(null, id)}><i className="fa fa-remove"></i></a>
+    );
 
     return (
-      <div className="panel panel-default">
-        <div className="panel-heading">
-          {title}
-          <a onClick={this.props.handleRemoveSource.bind(null, id)}><i className="fa fa-remove"></i></a>
-        </div>
-        <div className="panel-body">
-          <Table data={
-            [
-              ['List URL', tableData.list_url],
-              ['Form URL', tableData.form_url],
-              ['Form name', tableData.form_name],
-              ['Form email', tableData.form_email],
-              ['Form body', tableData.form_body],
-            ]
-          } />
-        </div>
-      </div>
+      <Widget title={title} removeLink={removeLink}>
+        <Table data={
+          [
+            ['List URL', tableData.list_url],
+            ['Form URL', tableData.form_url],
+            ['Form name', tableData.form_name],
+            ['Form email', tableData.form_email],
+            ['Form body', tableData.form_body],
+          ]
+        } />
+      </Widget>
     );
   }
 });

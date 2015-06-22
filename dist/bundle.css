@@ -1,0 +1,10 @@
+{"version":3,"sources":["app.scss"],"names":[],"mappings":"AAKsB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AAC9C,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AACxB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AACxB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AACxB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE;AACxB,MAAM,GAAG,KAAK,GAAG,EAAE,GAAG,EAAE,CALC;EACvB,UAAU,EAAE,CAAE,GADU","file":"app.css","sourcesContent":[".table > tbody > tr > td,\n.table > tbody > tr > th,\n.table > tfoot > tr > td,\n.table > tfoot > tr > th,\n.table > thead > tr > td,\n.table > thead > tr > th {\n  border-top: 0;\n}\n"],"sourceRoot":"/source/"}
+.table > tbody > tr > td,
+.table > tbody > tr > th,
+.table > tfoot > tr > td,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > thead > tr > th {
+  border-top: 0; }
+
+/*# sourceMappingURL=app.css.map */

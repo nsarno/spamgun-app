@@ -7,6 +7,7 @@ var DashboardActions = require('DashboardActions');
 
 var DocumentTitle = require('react-document-title');
 var SourceWidget = require('SourceWidget');
+var SourceForm = require('SourceForm');
 
 var Dashboard = React.createClass({
   getInitialState: function() {
@@ -61,6 +62,7 @@ var Dashboard = React.createClass({
   },
 
   render: function() {
+    var spinner = <i className="fa fa-spinner"></i>;
     var sources = _.map(this.state.sources, function(source) {
       return (
         <SourceWidget key={source.id} source={source} handleRemoveSource={this.handleRemoveSource} />
@@ -71,27 +73,8 @@ var Dashboard = React.createClass({
       <div id="dashboard" className="container">
         <DocumentTitle title="Dashboard" />
         <h1>Dashboard</h1>
-        {sources}
-        <form className="form-inline" onSubmit={this.handleSubmit}>
-          <div className="form-group">
-            <input onChange={this.handleChange} type="text" className="form-control" id="list_url" placeholder="List URL" />
-          </div>
-          <div className="form-group">
-            <input onChange={this.handleChange} type="text" className="form-control" id="form_url" placeholder="Form URL" />
-          </div>
-          <div className="form-group">
-            <input onChange={this.handleChange} type="text" className="form-control" id="name" placeholder="Name" />
-          </div>
-          <div className="form-group">
-            <input onChange={this.handleChange} type="text" className="form-control" id="email" placeholder="email" />
-          </div>
-          <div className="form-group">
-            <input onChange={this.handleChange} type="text" className="form-control" id="body" placeholder="message" />
-          </div>
-          <div className="form-group">
-            <input onChange={this.handleChange} type="submit" className="form-control"/>
-          </div>
-        </form>
+        {SourceStore.loading ? spinner : sources}
+        <SourceForm handleSubmit={this.handleSubmit} />
       </div>
     );
   }
