@@ -1,5 +1,3 @@
-'use strict';
-
 var React = require('react');
 
 var SourceStore = require('SourceStore');
@@ -8,11 +6,13 @@ var DashboardActions = require('DashboardActions');
 var DocumentTitle = require('react-document-title');
 var SourceWidget = require('SourceWidget');
 var SourceForm = require('SourceForm');
+var Widget = require('Widget');
 
 var Dashboard = React.createClass({
   getInitialState: function() {
     return {
       sources: SourceStore.getSources(),
+      addingSource: false,
       list_url: "http://www.leboncoin.fr/voitures/offres/ile_de_france/?rs=2008&me=100000&f=p",
       form_url: "http://www2.leboncoin.fr/ar/form/0",
       form_name: "James Kilroy",
@@ -32,10 +32,22 @@ var Dashboard = React.createClass({
     SourceStore.removeChangeListener(this.onSourceChange);
   },
 
-  onSourceChange: function(){
+  onSourceChange: function() {
     this.setState({
       sources: SourceStore.getSources()
-    })
+    });
+  },
+
+  handleAddSource: function(e) {
+    this.setState({
+      addingSource: true
+    });
+  },
+
+  handleCancelSource: function(e) {
+    this.setState({
+      addingSource: false
+    });
   },
 
   handleSubmit: function(event) {
@@ -62,7 +74,16 @@ var Dashboard = React.createClass({
   },
 
   render: function() {
-    var spinner = <i className="fa fa-spinner"></i>;
+    var newSourceLink = <a onClick={this.handleAddSource}>add source</a>;
+    var sourceForm = <SourceForm handleSubmit={this.handleSubmit} handleCancelSource={this.handleCancelSource} />;
+
+    var spinner = (
+      <div className="spinner">
+        <i className="fa fa-refresh fa-spin"></i>
+        <span>Loading sources...</span>
+      </div>
+    );
+
     var sources = _.map(this.state.sources, function(source) {
       return (
         <SourceWidget key={source.id} source={source} handleRemoveSource={this.handleRemoveSource} />
@@ -74,7 +95,7 @@ var Dashboard = React.createClass({
         <DocumentTitle title="Dashboard" />
         <h1>Dashboard</h1>
         {SourceStore.loading ? spinner : sources}
-        <SourceForm handleSubmit={this.handleSubmit} />
+        {this.state.addingSource ? sourceForm : newSourceLink}
       </div>
     );
   }

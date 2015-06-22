@@ -1,38 +1,47 @@
 var React = require('react');
 
+var Field = React.createClass({
+  render: function() {
+    var label = (
+      <label htmlFor={this.props.id} className="col-sm-2 control-label">
+        {this.props.label}
+      </label>
+    );
+
+    return (
+      <div className="form-group">
+        {this.props.label != undefined ? label : null}
+        <div className="col-sm-8">
+          {this.props.children}
+        </div>
+      </div>
+    );
+  }
+});
+
 var Input = React.createClass({
   render: function() {
     return (
-      <div className="form-group">
-        <label htmlFor={this.props.id}>{this.props.label}</label>
-        <input  
+      <Field label={this.props.label}>
+        <input
           className="form-control"
-          type={this.props.type}
           id={this.props.id}
-          placeholder={this.props.placeholder}
-          onChange={this.props.handleChange}/>
-      </div>
+          type={this.props.type}
+          placeholder={this.props.placeholder} />
+      </Field>
     );
   }
 });
 
 var Textarea = React.createClass({
   render: function() {
-    console.log('Textarea');
-    var label = null;
-    if (this.props.label != undefined) {
-      label = <label htmlFor={this.props.id}>{this.props.label}</label>
-    }
-
     return (
-      <div className="form-group">
-        {label}
+      <Field label={this.props.label}>
         <textarea
           className="form-control"
           id={this.props.id}
-          placeholder={this.props.placeholder}
-        />
-      </div>
+          placeholder={this.props.placeholder} />
+      </Field>
     );
   }
 });
@@ -40,7 +49,9 @@ var Textarea = React.createClass({
 var Submit = React.createClass({
   render: function() {
     return (
-      <button type="submit" className="btn btn-default submit">{this.props.children}</button>
+      <Field label="">
+        <button type="submit" className="btn btn-default submit">{this.props.name}</button>
+      </Field>
     );
   }
 });
@@ -51,7 +62,9 @@ var fieldToComponent = function (fieldType) {
     case 'textarea':
       component = Textarea;
       break;
-
+    case 'submit':
+      component = Submit;
+      break;
     default:
       component = Input;
   }
@@ -66,7 +79,7 @@ var Form = React.createClass({
     });
 
     return (
-      <form className={this.props.styles} onSubmit={this.props.handleSubmit}>
+      <form className="form-horizontal" onSubmit={this.props.handleSubmit}>
         {formFields}
       </form>
     );

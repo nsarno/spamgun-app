@@ -23571,12 +23571,13 @@
 
 	var React = __webpack_require__(1);
 
-	var SourceStore = __webpack_require__(199);
-	var DashboardActions = __webpack_require__(207);
+	var SourceStore = __webpack_require__(197);
+	var DashboardActions = __webpack_require__(205);
 
-	var DocumentTitle = __webpack_require__(197);
+	var DocumentTitle = __webpack_require__(207);
 	var SourceWidget = __webpack_require__(209);
 	var SourceForm = __webpack_require__(211);
+	var Widget = __webpack_require__(210);
 
 	var Dashboard = React.createClass({
 	  displayName: 'Dashboard',
@@ -23584,6 +23585,7 @@
 	  getInitialState: function getInitialState() {
 	    return {
 	      sources: SourceStore.getSources(),
+	      addingSource: false,
 	      list_url: 'http://www.leboncoin.fr/voitures/offres/ile_de_france/?rs=2008&me=100000&f=p',
 	      form_url: 'http://www2.leboncoin.fr/ar/form/0',
 	      form_name: 'James Kilroy',
@@ -23606,6 +23608,18 @@
 	  onSourceChange: function onSourceChange() {
 	    this.setState({
 	      sources: SourceStore.getSources()
+	    });
+	  },
+
+	  handleAddSource: function handleAddSource(e) {
+	    this.setState({
+	      addingSource: true
+	    });
+	  },
+
+	  handleCancelSource: function handleCancelSource(e) {
+	    this.setState({
+	      addingSource: false
 	    });
 	  },
 
@@ -23633,7 +23647,24 @@
 	  },
 
 	  render: function render() {
-	    var spinner = React.createElement('i', { className: 'fa fa-spinner' });
+	    var newSourceLink = React.createElement(
+	      'a',
+	      { onClick: this.handleAddSource },
+	      'add source'
+	    );
+	    var sourceForm = React.createElement(SourceForm, { handleSubmit: this.handleSubmit, handleCancelSource: this.handleCancelSource });
+
+	    var spinner = React.createElement(
+	      'div',
+	      { className: 'spinner' },
+	      React.createElement('i', { className: 'fa fa-refresh fa-spin' }),
+	      React.createElement(
+	        'span',
+	        null,
+	        'Loading sources...'
+	      )
+	    );
+
 	    var sources = _.map(this.state.sources, (function (source) {
 	      return React.createElement(SourceWidget, { key: source.id, source: source, handleRemoveSource: this.handleRemoveSource });
 	    }).bind(this));
@@ -23648,7 +23679,7 @@
 	        'Dashboard'
 	      ),
 	      SourceStore.loading ? spinner : sources,
-	      React.createElement(SourceForm, { handleSubmit: this.handleSubmit })
+	      this.state.addingSource ? sourceForm : newSourceLink
 	    );
 	  }
 	});
@@ -23661,122 +23692,9 @@
 
 	'use strict';
 
-	var React = __webpack_require__(1),
-	    createSideEffect = __webpack_require__(198);
-
-	var _serverTitle = null;
-
-	function getTitleFromPropsList(propsList) {
-	  var innermostProps = propsList[propsList.length - 1];
-	  if (innermostProps) {
-	    return innermostProps.title;
-	  }
-	}
-
-	var DocumentTitle = createSideEffect(function handleChange(propsList) {
-	  var title = getTitleFromPropsList(propsList);
-
-	  if (typeof document !== 'undefined') {
-	    document.title = title || '';
-	  } else {
-	    _serverTitle = title || null;
-	  }
-	}, {
-	  displayName: 'DocumentTitle',
-
-	  propTypes: {
-	    title: React.PropTypes.string.isRequired
-	  },
-
-	  statics: {
-	    peek: function () {
-	      return _serverTitle;
-	    },
-
-	    rewind: function () {
-	      var title = _serverTitle;
-	      this.dispose();
-	      return title;
-	    }
-	  }
-	});
-
-	module.exports = DocumentTitle;
-
-/***/ },
-/* 198 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1),
-	    invariant = __webpack_require__(7),
-	    shallowEqual = __webpack_require__(137);
-
-	function createSideEffect(onChange, mixin) {
-	  invariant(
-	    typeof onChange === 'function',
-	    'onChange(propsList) is a required argument.'
-	  );
-
-	  var mountedInstances = [];
-
-	  function emitChange() {
-	    onChange(mountedInstances.map(function (instance) {
-	      return instance.props;
-	    }));
-	  }
-
-	  return React.createClass({
-	    mixins: [mixin],
-
-	    statics: {
-	      dispose: function () {
-	        mountedInstances = [];
-	        emitChange();
-	      }
-	    },
-
-	    shouldComponentUpdate: function (nextProps) {
-	      return !shallowEqual(nextProps, this.props);
-	    },
-
-	    componentWillMount: function () {
-	      mountedInstances.push(this);
-	      emitChange();
-	    },
-
-	    componentDidUpdate: function () {
-	      emitChange();
-	    },
-
-	    componentWillUnmount: function () {
-	      var index = mountedInstances.indexOf(this);
-	      mountedInstances.splice(index, 1);
-	      emitChange();
-	    },
-
-	    render: function () {
-	      if (this.props.children) {
-	        return React.Children.only(this.props.children);
-	      } else {
-	        return null;
-	      }
-	    }
-	  });
-	}
-
-	module.exports = createSideEffect;
-
-/***/ },
-/* 199 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Dispatcher = __webpack_require__(200);
-	var Constants = __webpack_require__(204);
-	var EventEmitter = __webpack_require__(206).EventEmitter;
+	var Dispatcher = __webpack_require__(198);
+	var Constants = __webpack_require__(202);
+	var EventEmitter = __webpack_require__(204).EventEmitter;
 
 	var SourceStore = _.assign({}, EventEmitter.prototype, {
 	  loading: false,
@@ -23898,16 +23816,16 @@
 	module.exports = SourceStore;
 
 /***/ },
-/* 200 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Dispatcher = __webpack_require__(201).Dispatcher;
+	var Dispatcher = __webpack_require__(199).Dispatcher;
 	module.exports = new Dispatcher();
 
 /***/ },
-/* 201 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -23919,11 +23837,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Dispatcher = __webpack_require__(202)
+	module.exports.Dispatcher = __webpack_require__(200)
 
 
 /***/ },
-/* 202 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -23940,7 +23858,7 @@
 
 	"use strict";
 
-	var invariant = __webpack_require__(203);
+	var invariant = __webpack_require__(201);
 
 	var _lastID = 1;
 	var _prefix = 'ID_';
@@ -24179,7 +24097,7 @@
 
 
 /***/ },
-/* 203 */
+/* 201 */
 /***/ function(module, exports) {
 
 	/**
@@ -24238,12 +24156,12 @@
 
 
 /***/ },
-/* 204 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var keymirror = __webpack_require__(205);
+	var keymirror = __webpack_require__(203);
 
 	module.exports = keymirror({
 	  CHANGE: null,
@@ -24262,7 +24180,7 @@
 	});
 
 /***/ },
-/* 205 */
+/* 203 */
 /***/ function(module, exports) {
 
 	/**
@@ -24321,7 +24239,7 @@
 
 
 /***/ },
-/* 206 */
+/* 204 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -24628,14 +24546,14 @@
 
 
 /***/ },
-/* 207 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Dispatcher = __webpack_require__(200);
-	var Constants = __webpack_require__(204);
-	var ParrotClient = __webpack_require__(208);
+	var Dispatcher = __webpack_require__(198);
+	var Constants = __webpack_require__(202);
+	var ParrotClient = __webpack_require__(206);
 
 	var DashboardActions = {
 	  loadSources: function loadSources() {
@@ -24697,7 +24615,7 @@
 	module.exports = DashboardActions;
 
 /***/ },
-/* 208 */
+/* 206 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24721,6 +24639,119 @@
 	};
 
 	module.exports = ParrotClient;
+
+/***/ },
+/* 207 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1),
+	    createSideEffect = __webpack_require__(208);
+
+	var _serverTitle = null;
+
+	function getTitleFromPropsList(propsList) {
+	  var innermostProps = propsList[propsList.length - 1];
+	  if (innermostProps) {
+	    return innermostProps.title;
+	  }
+	}
+
+	var DocumentTitle = createSideEffect(function handleChange(propsList) {
+	  var title = getTitleFromPropsList(propsList);
+
+	  if (typeof document !== 'undefined') {
+	    document.title = title || '';
+	  } else {
+	    _serverTitle = title || null;
+	  }
+	}, {
+	  displayName: 'DocumentTitle',
+
+	  propTypes: {
+	    title: React.PropTypes.string.isRequired
+	  },
+
+	  statics: {
+	    peek: function () {
+	      return _serverTitle;
+	    },
+
+	    rewind: function () {
+	      var title = _serverTitle;
+	      this.dispose();
+	      return title;
+	    }
+	  }
+	});
+
+	module.exports = DocumentTitle;
+
+/***/ },
+/* 208 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1),
+	    invariant = __webpack_require__(7),
+	    shallowEqual = __webpack_require__(137);
+
+	function createSideEffect(onChange, mixin) {
+	  invariant(
+	    typeof onChange === 'function',
+	    'onChange(propsList) is a required argument.'
+	  );
+
+	  var mountedInstances = [];
+
+	  function emitChange() {
+	    onChange(mountedInstances.map(function (instance) {
+	      return instance.props;
+	    }));
+	  }
+
+	  return React.createClass({
+	    mixins: [mixin],
+
+	    statics: {
+	      dispose: function () {
+	        mountedInstances = [];
+	        emitChange();
+	      }
+	    },
+
+	    shouldComponentUpdate: function (nextProps) {
+	      return !shallowEqual(nextProps, this.props);
+	    },
+
+	    componentWillMount: function () {
+	      mountedInstances.push(this);
+	      emitChange();
+	    },
+
+	    componentDidUpdate: function () {
+	      emitChange();
+	    },
+
+	    componentWillUnmount: function () {
+	      var index = mountedInstances.indexOf(this);
+	      mountedInstances.splice(index, 1);
+	      emitChange();
+	    },
+
+	    render: function () {
+	      if (this.props.children) {
+	        return React.Children.only(this.props.children);
+	      } else {
+	        return null;
+	      }
+	    }
+	  });
+	}
+
+	module.exports = createSideEffect;
 
 /***/ },
 /* 209 */
@@ -24786,7 +24817,7 @@
 
 	    return React.createElement(
 	      Widget,
-	      { title: title, removeLink: removeLink },
+	      { title: title, links: removeLink },
 	      React.createElement(Table, { data: [['List URL', tableData.list_url], ['Form URL', tableData.form_url], ['Form name', tableData.form_name], ['Form email', tableData.form_email], ['Form body', tableData.form_body]] })
 	    );
 	  }
@@ -24806,20 +24837,21 @@
 	  displayName: "Widget",
 
 	  render: function render() {
-	    var heading = null;
-	    if (this.props.title != undefined) {
-	      heading = React.createElement(
+	    var heading = React.createElement(
+	      "div",
+	      { className: "panel-heading" },
+	      this.props.title,
+	      React.createElement(
 	        "div",
-	        { className: "panel-heading" },
-	        this.props.title,
-	        this.props.removeLink
-	      );
-	    }
+	        { className: "pull-right" },
+	        this.props.links
+	      )
+	    );
 
 	    return React.createElement(
 	      "div",
 	      { className: "panel panel-default" },
-	      heading,
+	      this.props.title != undefined ? heading : null,
 	      React.createElement(
 	        "div",
 	        { className: "panel-body" },
@@ -24847,11 +24879,17 @@
 	  render: function render() {
 	    var placeholderListURL = 'http://www.leboncoin.fr/voitures/offres/ile_de_france/?rs=2008&me=100000&f=p';
 	    var placeholderFormURL = 'http://www2.leboncoin.fr/ar/form/0';
-	    var fields = [{ id: 'list_url', placeholder: placeholderListURL, type: 'url' }, { id: 'form_url', placeholder: placeholderFormURL, type: 'url' }, { id: 'name', placeholder: 'John Doe', type: 'text' }, { id: 'email', placeholder: 'john.doe@example.net', type: 'email' }, { id: 'message', placeholder: 'Hi, ...', type: 'textarea' }, { type: 'submit' }];
+	    var cancelLink = React.createElement(
+	      'a',
+	      { onClick: this.props.handleCancelSource },
+	      React.createElement('i', { className: 'fa fa-remove' })
+	    );
+	    console.log(this.props.handleCancelSource);
+	    var fields = [{ label: 'List URL', id: 'list_url', placeholder: placeholderListURL, type: 'url' }, { label: 'Form URL', id: 'form_url', placeholder: placeholderFormURL, type: 'url' }, { label: 'Name', id: 'name', placeholder: 'John Doe', type: 'text' }, { label: 'Email', id: 'email', placeholder: 'john.doe@example.net', type: 'email' }, { label: 'Message', id: 'message', placeholder: 'Hi, ...', type: 'textarea' }, { type: 'submit', id: 'submit', name: 'Add' }];
 
 	    return React.createElement(
 	      Widget,
-	      { title: 'Add source' },
+	      { title: 'Add source', links: cancelLink },
 	      React.createElement(Form, { handleSubmit: this.props.handleSubmit, fields: fields })
 	    );
 	  }
@@ -24867,24 +24905,41 @@
 
 	var React = __webpack_require__(1);
 
+	var Field = React.createClass({
+	  displayName: "Field",
+
+	  render: function render() {
+	    var label = React.createElement(
+	      "label",
+	      { htmlFor: this.props.id, className: "col-sm-2 control-label" },
+	      this.props.label
+	    );
+
+	    return React.createElement(
+	      "div",
+	      { className: "form-group" },
+	      this.props.label != undefined ? label : null,
+	      React.createElement(
+	        "div",
+	        { className: "col-sm-8" },
+	        this.props.children
+	      )
+	    );
+	  }
+	});
+
 	var Input = React.createClass({
 	  displayName: "Input",
 
 	  render: function render() {
 	    return React.createElement(
-	      "div",
-	      { className: "form-group" },
-	      React.createElement(
-	        "label",
-	        { htmlFor: this.props.id },
-	        this.props.label
-	      ),
+	      Field,
+	      { label: this.props.label },
 	      React.createElement("input", {
 	        className: "form-control",
-	        type: this.props.type,
 	        id: this.props.id,
-	        placeholder: this.props.placeholder,
-	        onChange: this.props.handleChange })
+	        type: this.props.type,
+	        placeholder: this.props.placeholder })
 	    );
 	  }
 	});
@@ -24893,25 +24948,13 @@
 	  displayName: "Textarea",
 
 	  render: function render() {
-	    console.log("Textarea");
-	    var label = null;
-	    if (this.props.label != undefined) {
-	      label = React.createElement(
-	        "label",
-	        { htmlFor: this.props.id },
-	        this.props.label
-	      );
-	    }
-
 	    return React.createElement(
-	      "div",
-	      { className: "form-group" },
-	      label,
+	      Field,
+	      { label: this.props.label },
 	      React.createElement("textarea", {
 	        className: "form-control",
 	        id: this.props.id,
-	        placeholder: this.props.placeholder
-	      })
+	        placeholder: this.props.placeholder })
 	    );
 	  }
 	});
@@ -24921,9 +24964,13 @@
 
 	  render: function render() {
 	    return React.createElement(
-	      "button",
-	      { type: "submit", className: "btn btn-default submit" },
-	      this.props.children
+	      Field,
+	      { label: "" },
+	      React.createElement(
+	        "button",
+	        { type: "submit", className: "btn btn-default submit" },
+	        this.props.name
+	      )
 	    );
 	  }
 	});
@@ -24934,7 +24981,9 @@
 	    case "textarea":
 	      component = Textarea;
 	      break;
-
+	    case "submit":
+	      component = Submit;
+	      break;
 	    default:
 	      component = Input;
 	  }
@@ -24952,7 +25001,7 @@
 
 	    return React.createElement(
 	      "form",
-	      { className: this.props.styles, onSubmit: this.props.handleSubmit },
+	      { className: "form-horizontal", onSubmit: this.props.handleSubmit },
 	      formFields
 	    );
 	  }

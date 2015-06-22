@@ -1,5 +1,3 @@
-'use strict';
-
 var React = require('react');
 var Widget = require('Widget');
 
@@ -41,7 +39,7 @@ var SourceWidget = React.createClass({
     );
 
     return (
-      <Widget title={title} removeLink={removeLink}>
+      <Widget title={title} links={removeLink}>
         <Table data={
           [
             ['List URL', tableData.list_url],

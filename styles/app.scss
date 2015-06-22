@@ -6,3 +6,23 @@
 .table > thead > tr > th {
   border-top: 0;
 }
+
+a {
+  cursor: pointer;
+}
+
+.spinner {
+  width: 100%;
+  text-align: center;
+  font-size: 25px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+
+  i {
+    margin-right: 15px;
+  }
+}
+
+#dashboard {
+
+}
