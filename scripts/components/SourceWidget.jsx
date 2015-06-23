@@ -76,6 +76,7 @@ var SourceWidget = React.createClass({
 
     return ({
       editing: false,
+      showSettings: false,
       formValues: this.initialFormValues()
     });
   },
@@ -109,10 +110,19 @@ var SourceWidget = React.createClass({
     DashboardActions.updateSource(this.props.source.id, this.props.source.data.id, this.state.formValues);
   },
 
-  handleCancel: function() {
+  handleCancelUpdate: function() {
     this.setState({
       editing: false,
       formValues: this.initialFormValues()
+    });
+  },
+
+  handleToggleSettings: function() {
+    if (this.state.showSettings == true) {
+      this.handleCancelUpdate();
+    }
+    this.setState({
+      showSettings: !this.state.showSettings
     });
   },
 
@@ -124,10 +134,13 @@ var SourceWidget = React.createClass({
 
     var footer = (
       <div>
-        <button className="btn btn-default btn-primary" onClick={this.props.handleRunScrapper.bind(null, id)}>
-          Run scrapper
+        <button className={"btn btn-default" + (this.state.showSettings ? "active" : "")} onClick={this.handleToggleSettings}>
+          <i className="fa fa-cog"></i>
         </button>
-        <button className="btn btn-default btn-primary" onClick={this.props.handleRunSpammer.bind(null, id)}>
+        <button className="btn btn-default btn-primary" onClick={this.props.handleRunScrapper.bind(null, id)}>
+          <i className="fa fa-binoculars"></i> Run scrapper
+        </button>
+        <button className="btn btn-default btn-danger" onClick={this.props.handleRunSpammer.bind(null, id)}>
           <i className="fa fa-send"></i> Run spammer
         </button>
 
@@ -151,15 +164,25 @@ var SourceWidget = React.createClass({
           <button className="btn btn-default btn-primary" onClick={this.handleUpdate}>
             {this.props.source.status == 'updating' ? <i className="fa fa-spinner fa-pulse"></i> : 'Update'}
           </button>
-          <button className="btn btn-default btn-default" onClick={this.handleCancel}>Cancel</button>
+          <button className="btn btn-default btn-default" onClick={this.handleCancelUpdate}>Cancel</button>
+        </div>
+      );
+    }
+
+    if (this.state.showSettings == true) {
+      var settings = <Form handleSubmit={this.handleUpdate} handleChange={this.handleChange} fields={fields} />
+    } else {
+      var info = (
+        <div>
+          <i className="fa fa-file-o"></i><span> </span>
+          <a href={this.props.source.data.list_url}>{this.props.source.data.list_url}</a>
         </div>
       );
     }
     
-
     return (
       <Widget footer={footer}>
-        <Form handleSubmit={this.handleUpdate} handleChange={this.handleChange} fields={fields} />
+        {this.state.showSettings == true ? settings : info }
         {this.state.editing == true ? updateOrCancel : null}
       </Widget>
     );

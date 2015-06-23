@@ -6,8 +6,13 @@ var SourceForm = React.createClass({
   render: function() {
     var placeholderListURL = "http://www.leboncoin.fr/voitures/offres/ile_de_france/?rs=2008&me=100000&f=p";
     var placeholderFormURL = "http://www2.leboncoin.fr/ar/form/0";
-    var cancelLink = (
-      <a onClick={this.props.handleHideForm}><i className="fa fa-remove"></i></a>
+    var heading = (
+      <div>
+        Add source
+        <div className="pull-right">
+          <a onClick={this.props.handleHideForm}><i className="fa fa-remove"></i></a>
+        </div>
+      </div>
     );
     var fields = [
       {label: 'List URL', id: 'list_url', placeholder: placeholderListURL, type: 'url', value: this.props.values.list_url},
@@ -19,7 +24,7 @@ var SourceForm = React.createClass({
     ];
 
     return (
-      <Widget title="Add source" links={cancelLink}>
+      <Widget heading={heading}>
         <Form handleSubmit={this.props.handleSubmit} handleChange={this.props.handleChange} fields={fields} />
       </Widget>
     );
