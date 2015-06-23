@@ -23760,6 +23760,21 @@
 	    this.emit(Constants.CHANGE);
 	  },
 
+	  onUpdateSource: function onUpdateSource(payload) {
+	    this.sources[payload.key].status = 'updating';
+	    this.emit(Constants.CHANGE);
+	  },
+
+	  onUpdateSourceSuccess: function onUpdateSourceSuccess(payload) {
+	    this.sources[payload.key].status = 'ok';
+	    this.emit(Constants.CHANGE);
+	  },
+
+	  onUpdateSourceError: function onUpdateSourceError(payload) {
+	    this.sources[payload.key].status = 'error';
+	    this.emit(Constants.CHANGE);
+	  },
+
 	  onRemoveSource: function onRemoveSource(payload) {
 	    this.sources[payload.id].status = 'removing';
 	    this.emit(Constants.CHANGE);
@@ -23802,6 +23817,18 @@
 
 	    case Constants.ADD_SOURCE_ERROR:
 	      SourceStore.onAddSourceError(payload.data);
+	      break;
+
+	    case Constants.UPDATE_SOURCE:
+	      SourceStore.onUpdateSource(payload.data);
+	      break;
+
+	    case Constants.UPDATE_SOURCE_SUCCESS:
+	      SourceStore.onUpdateSourceSuccess(payload.data);
+	      break;
+
+	    case Constants.UPDATE_SOURCE_ERROR:
+	      SourceStore.onUpdateSourceError(payload.data);
 	      break;
 
 	    case Constants.REMOVE_SOURCE:
@@ -24181,6 +24208,10 @@
 	  ADD_SOURCE: null,
 	  ADD_SOURCE_SUCCESS: null,
 	  ADD_SOURCE_FAILURE: null,
+
+	  UPDATE_SOURCE: null,
+	  UPDATE_SOURCE_SUCCESS: null,
+	  UPDATE_SOURCE_FAILURE: null,
 
 	  REMOVE_SOURCE: null,
 	  REMOVE_SOURCE_SUCCESS: null,
@@ -24599,6 +24630,24 @@
 	    }).bind(this));
 	  },
 
+	  updateSource: function updateSource(key, id, data) {
+	    Dispatcher.dispatch({
+	      type: Constants.UPDATE_SOURCE,
+	      data: { key: key }
+	    });
+	    ParrotClient.updateSource(id, data, (function () {
+	      Dispatcher.dispatch({
+	        type: Constants.UPDATE_SOURCE_SUCCESS,
+	        data: { key: key }
+	      });
+	    }).bind(this), (function (error) {
+	      Dispatcher.dispatch({
+	        type: Constants.UPDATE_SOURCE_FAILURE,
+	        data: { key: key, error: error }
+	      });
+	    }).bind(this));
+	  },
+
 	  removeSource: function removeSource(source) {
 	    var id = source.id;
 
@@ -24635,6 +24684,14 @@
 
 	  addSource: function addSource(data, success, failure) {
 	    $.post("https://parrot-api.herokuapp.com/sources", data).done(success).fail(failure);
+	  },
+
+	  updateSource: function updateSource(id, data, success, failure) {
+	    $.ajax({
+	      type: "PUT",
+	      url: "https://parrot-api.herokuapp.com/sources/" + id,
+	      data: { source: data }
+	    }).done(success).fail(failure);
 	  },
 
 	  removeSource: function removeSource(source, success, failure) {
@@ -24771,6 +24828,9 @@
 	var Widget = __webpack_require__(210);
 	var Form = __webpack_require__(211);
 
+	var DashboardActions = __webpack_require__(205);
+	var SourceStore = __webpack_require__(197);
+
 	function getLocation(href) {
 	  var l = document.createElement('a');
 	  l.href = href;
@@ -24840,19 +24900,42 @@
 	var SourceWidget = React.createClass({
 	  displayName: 'SourceWidget',
 
+	  initialFormValues: function initialFormValues() {
+	    var source = this.props.source.data;
+	    return {
+	      list_url: source.list_url,
+	      form_url: source.form_url,
+	      form_name: source.form_name,
+	      form_email: source.form_email,
+	      form_body: source.form_body
+	    };
+	  },
+
 	  getInitialState: function getInitialState() {
 	    var source = this.props.source.data;
 
 	    return {
 	      editing: false,
-	      formValues: {
-	        list_url: source.list_url,
-	        form_url: source.form_url,
-	        form_name: source.form_name,
-	        form_email: source.form_email,
-	        form_body: source.form_body
-	      }
+	      formValues: this.initialFormValues()
 	    };
+	  },
+
+	  componentDidMount: function componentDidMount() {
+	    SourceStore.addChangeListener(this.onSourceChange);
+	  },
+
+	  componentWillUnmount: function componentWillUnmount() {
+	    SourceStore.removeChangeListener(this.onSourceChange);
+	  },
+
+	  onSourceChange: function onSourceChange() {
+	    var editing = this.state.editing;
+	    if (this.props.source.status == 'ok') {
+	      editing = false;
+	    }
+	    this.setState({
+	      editing: editing
+	    });
 	  },
 
 	  handleChange: function handleChange(event) {
@@ -24862,7 +24945,16 @@
 	    this.setState(state);
 	  },
 
-	  handleSubmit: function handleSubmit() {},
+	  handleUpdate: function handleUpdate() {
+	    DashboardActions.updateSource(this.props.source.id, this.props.source.data.id, this.state.formValues);
+	  },
+
+	  handleCancel: function handleCancel() {
+	    this.setState({
+	      editing: false,
+	      formValues: this.initialFormValues()
+	    });
+	  },
 
 	  render: function render() {
 	    var id = this.props.source.id;
@@ -24895,13 +24987,27 @@
 	    var fields = [{ label: 'List URL', id: 'list_url', type: 'url', value: this.state.formValues.list_url }, { label: 'Form URL', id: 'form_url', type: 'url', value: this.state.formValues.form_url }, { label: 'Name', id: 'form_name', type: 'text', value: this.state.formValues.form_name }, { label: 'Email', id: 'form_email', type: 'email', value: this.state.formValues.form_email }, { label: 'Message', id: 'form_body', type: 'textarea', value: this.state.formValues.form_body }];
 
 	    if (this.state.editing == true) {
-	      fields.push({ type: 'submit', name: 'Update' });
+	      var updateOrCancel = React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'button',
+	          { className: 'btn btn-default btn-primary', onClick: this.handleUpdate },
+	          this.props.source.status == 'updating' ? React.createElement('i', { className: 'fa fa-spinner fa-pulse' }) : 'Update'
+	        ),
+	        React.createElement(
+	          'button',
+	          { className: 'btn btn-default btn-default', onClick: this.handleCancel },
+	          'Cancel'
+	        )
+	      );
 	    }
 
 	    return React.createElement(
 	      Widget,
 	      { footer: footer },
-	      React.createElement(Form, { handleSubmit: this.handleSubmit, handleChange: this.handleChange, fields: fields })
+	      React.createElement(Form, { handleSubmit: this.handleUpdate, handleChange: this.handleChange, fields: fields }),
+	      this.state.editing == true ? updateOrCancel : null
 	    );
 	  }
 	});

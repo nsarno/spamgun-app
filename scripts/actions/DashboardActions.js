@@ -46,6 +46,27 @@ var DashboardActions = {
     );
   },
 
+  updateSource: function(key, id, data) {
+    Dispatcher.dispatch({
+      type: Constants.UPDATE_SOURCE,
+      data: { key: key }
+    });
+    ParrotClient.updateSource(id, data,
+      function() {
+        Dispatcher.dispatch({
+          type: Constants.UPDATE_SOURCE_SUCCESS,
+          data: { key: key }
+        });
+      }.bind(this),
+      function(error) {
+        Dispatcher.dispatch({
+          type: Constants.UPDATE_SOURCE_FAILURE,
+          data: { key: key, error: error }
+        });
+      }.bind(this)
+    );
+  },
+
   removeSource: function(source) {
     var id = source.id;
 

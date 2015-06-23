@@ -13,6 +13,15 @@ var ParrotClient = {
       .fail(failure);
   },
 
+  updateSource: function(id, data, success, failure) {
+    $.ajax({
+      type: "PUT",
+      url: "https://parrot-api.herokuapp.com/sources/" + id,
+      data: { source: data }
+    }).done(success)
+      .fail(failure);
+  },
+
   removeSource: function(source, success, failure) {
     console.log(source);
     $.ajax({

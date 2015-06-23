@@ -59,6 +59,21 @@ var SourceStore = _.assign({}, EventEmitter.prototype, {
     this.emit(Constants.CHANGE);
   },
 
+  onUpdateSource: function(payload) {
+    this.sources[payload.key].status = 'updating';
+    this.emit(Constants.CHANGE);
+  },
+
+  onUpdateSourceSuccess: function(payload) {
+    this.sources[payload.key].status = 'ok';
+    this.emit(Constants.CHANGE);
+  },
+
+  onUpdateSourceError: function(payload) {
+    this.sources[payload.key].status = 'error';
+    this.emit(Constants.CHANGE);
+  },
+
   onRemoveSource: function(payload) {
     this.sources[payload.id].status = 'removing';
     this.emit(Constants.CHANGE);
@@ -101,6 +116,18 @@ Dispatcher.register(function(payload) {
 
     case Constants.ADD_SOURCE_ERROR:
       SourceStore.onAddSourceError(payload.data);
+      break;
+
+    case Constants.UPDATE_SOURCE:
+      SourceStore.onUpdateSource(payload.data);
+      break;
+
+    case Constants.UPDATE_SOURCE_SUCCESS:
+      SourceStore.onUpdateSourceSuccess(payload.data);
+      break;
+
+    case Constants.UPDATE_SOURCE_ERROR:
+      SourceStore.onUpdateSourceError(payload.data);
       break;
 
     case Constants.REMOVE_SOURCE:

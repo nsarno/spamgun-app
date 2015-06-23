@@ -11,6 +11,10 @@ module.exports = keymirror({
   ADD_SOURCE_SUCCESS: null,
   ADD_SOURCE_FAILURE: null,
 
+  UPDATE_SOURCE: null,
+  UPDATE_SOURCE_SUCCESS: null,
+  UPDATE_SOURCE_FAILURE: null,
+
   REMOVE_SOURCE: null,
   REMOVE_SOURCE_SUCCESS: null,
   REMOVE_SOURCE_FAILURE: null,

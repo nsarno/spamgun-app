@@ -2,6 +2,9 @@ var React = require('react');
 var Widget = require('Widget');
 var Form = require('Form');
 
+var DashboardActions = require('DashboardActions');
+var SourceStore = require('SourceStore');
+
 function getLocation(href) {
   var l = document.createElement("a");
   l.href = href;
@@ -57,18 +60,41 @@ Table.Textarea = React.createClass({
 });
 
 var SourceWidget = React.createClass({
+  initialFormValues: function() {
+    var source = this.props.source.data;
+    return ({
+      list_url: source.list_url,
+      form_url: source.form_url,
+      form_name: source.form_name,
+      form_email: source.form_email,
+      form_body: source.form_body
+    });
+  },
+
   getInitialState: function() {
     var source = this.props.source.data;
 
     return ({
       editing: false,
-      formValues: {
-        list_url: source.list_url,
-        form_url: source.form_url,
-        form_name: source.form_name,
-        form_email: source.form_email,
-        form_body: source.form_body
-      }
+      formValues: this.initialFormValues()
+    });
+  },
+
+  componentDidMount: function() {
+    SourceStore.addChangeListener(this.onSourceChange);
+  },
+
+  componentWillUnmount: function() {
+    SourceStore.removeChangeListener(this.onSourceChange);
+  },
+
+  onSourceChange: function() {
+    var editing = this.state.editing;
+    if (this.props.source.status == 'ok') {
+      editing = false;
+    }
+    this.setState({
+      editing: editing
     });
   },
 
@@ -79,8 +105,15 @@ var SourceWidget = React.createClass({
     this.setState(state);
   },
 
-  handleSubmit: function() {
+  handleUpdate: function() {
+    DashboardActions.updateSource(this.props.source.id, this.props.source.data.id, this.state.formValues);
+  },
 
+  handleCancel: function() {
+    this.setState({
+      editing: false,
+      formValues: this.initialFormValues()
+    });
   },
 
   render: function() {
@@ -113,13 +146,21 @@ var SourceWidget = React.createClass({
     ];
 
     if (this.state.editing == true) {
-      fields.push({type: 'submit', name: 'Update'});
+      var updateOrCancel = (
+        <div>
+          <button className="btn btn-default btn-primary" onClick={this.handleUpdate}>
+            {this.props.source.status == 'updating' ? <i className="fa fa-spinner fa-pulse"></i> : 'Update'}
+          </button>
+          <button className="btn btn-default btn-default" onClick={this.handleCancel}>Cancel</button>
+        </div>
+      );
     }
     
 
     return (
       <Widget footer={footer}>
-        <Form handleSubmit={this.handleSubmit} handleChange={this.handleChange} fields={fields} />
+        <Form handleSubmit={this.handleUpdate} handleChange={this.handleChange} fields={fields} />
+        {this.state.editing == true ? updateOrCancel : null}
       </Widget>
     );
   }
