@@ -1,5 +1,24 @@
 var React = require('react');
 
+var Form = React.createClass({
+  render: function() {
+    var formFields = _.map(this.props.fields, function(field, index) {
+      var component = fieldToComponent(field.type);
+      var componentProps = _.merge(field, { 
+        handleChange: this.props.handleChange,
+        key: index
+      });
+      return component(componentProps);
+    }.bind(this));
+
+    return (
+      <form className="form-horizontal" onSubmit={this.props.handleSubmit}>
+        {formFields}
+      </form>
+    );
+  }
+});
+
 var Field = React.createClass({
   render: function() {
     var label = (
@@ -19,9 +38,8 @@ var Field = React.createClass({
   }
 });
 
-var Input = React.createClass({
+Form.Input = React.createClass({
   render: function() {
-    console.log(this.props.handleChange);
     return (
       <Field label={this.props.label}>
         <input
@@ -37,7 +55,7 @@ var Input = React.createClass({
   }
 });
 
-var Textarea = React.createClass({
+Form.Textarea = React.createClass({
   render: function() {
     return (
       <Field label={this.props.label}>
@@ -53,7 +71,7 @@ var Textarea = React.createClass({
   }
 });
 
-var Submit = React.createClass({
+Form.Submit = React.createClass({
   render: function() {
     return (
       <Field label="">
@@ -63,38 +81,21 @@ var Submit = React.createClass({
   }
 });
 
-var fieldToComponent = function (fieldType) {
-  var component = Input;
+function fieldToComponent(fieldType) {
+  var component = Form.Input;
   switch (fieldType) {
     case 'textarea':
-      component = Textarea;
+      component = Form.Textarea;
       break;
     case 'submit':
-      component = Submit;
+      component = Form.Submit;
       break;
     default:
-      component = Input;
+      component = Form.Input;
   }
   return (React.createFactory(component));
 };
 
-var Form = React.createClass({
-  render: function() {
-    var formFields = _.map(this.props.fields, function(field, index) {
-      var component = fieldToComponent(field.type);
-      var componentProps = _.merge(field, { 
-        handleChange: this.props.handleChange,
-        key: index
-      });
-      return component(componentProps);
-    }.bind(this));
-
-    return (
-      <form className="form-horizontal" onSubmit={this.props.handleSubmit}>
-        {formFields}
-      </form>
-    );
-  }
-});
+Form.fieldToComponent = fieldToComponent;
 
 module.exports = Form;

@@ -23576,7 +23576,7 @@
 
 	var DocumentTitle = __webpack_require__(207);
 	var SourceWidget = __webpack_require__(209);
-	var SourceForm = __webpack_require__(211);
+	var SourceForm = __webpack_require__(212);
 	var Widget = __webpack_require__(210);
 
 	var Dashboard = React.createClass({
@@ -24769,8 +24769,9 @@
 
 	var React = __webpack_require__(1);
 	var Widget = __webpack_require__(210);
+	var Form = __webpack_require__(211);
 
-	var getLocation = function getLocation(href) {
+	function getLocation(href) {
 	  var l = document.createElement('a');
 	  l.href = href;
 	  return l;
@@ -24809,20 +24810,69 @@
 	  }
 	});
 
+	Table.Input = React.createClass({
+	  displayName: 'Input',
+
+	  render: function render() {
+	    return React.createElement('input', {
+	      onChange: this.props.handleChange,
+	      className: 'form-control',
+	      type: this.props.type,
+	      id: this.props.id,
+	      value: this.props.value
+	    });
+	  }
+	});
+
+	Table.Textarea = React.createClass({
+	  displayName: 'Textarea',
+
+	  render: function render() {
+	    return React.createElement('textarea', {
+	      onChange: this.props.handleChange,
+	      className: 'form-control',
+	      id: this.props.id,
+	      value: this.props.value
+	    });
+	  }
+	});
+
 	var SourceWidget = React.createClass({
 	  displayName: 'SourceWidget',
 
+	  getInitialState: function getInitialState() {
+	    var source = this.props.source.data;
+
+	    return {
+	      editing: false,
+	      formValues: {
+	        list_url: source.list_url,
+	        form_url: source.form_url,
+	        form_name: source.form_name,
+	        form_email: source.form_email,
+	        form_body: source.form_body
+	      }
+	    };
+	  },
+
+	  handleChange: function handleChange(event) {
+	    var state = { formValues: this.state.formValues };
+	    state['formValues'][event.target.id] = event.target.value;
+	    state.editing = true;
+	    this.setState(state);
+	  },
+
+	  handleSubmit: function handleSubmit() {},
+
 	  render: function render() {
-	    var listURL = getLocation(this.props.source.data.list_url);
-	    var title = listURL.hostname;
-	    var tableData = this.props.source.data;
 	    var id = this.props.source.id;
 
-	    return React.createElement(
-	      Widget,
-	      { title: title },
-	      React.createElement(Table, { data: [['List URL', tableData.list_url], ['Form URL', tableData.form_url], ['Form name', tableData.form_name], ['Form email', tableData.form_email], ['Form body', tableData.form_body]]
-	      }),
+	    // var listURL = getLocation(this.props.source.data.list_url);
+	    // var title = listURL.hostname;
+
+	    var footer = React.createElement(
+	      'div',
+	      null,
 	      React.createElement(
 	        'button',
 	        { className: 'btn btn-default btn-primary', onClick: this.props.handleRunScrapper.bind(null, id) },
@@ -24840,6 +24890,18 @@
 	        React.createElement('i', { className: 'fa fa-trash' }),
 	        ' Destroy'
 	      )
+	    );
+
+	    var fields = [{ label: 'List URL', id: 'list_url', type: 'url', value: this.state.formValues.list_url }, { label: 'Form URL', id: 'form_url', type: 'url', value: this.state.formValues.form_url }, { label: 'Name', id: 'form_name', type: 'text', value: this.state.formValues.form_name }, { label: 'Email', id: 'form_email', type: 'email', value: this.state.formValues.form_email }, { label: 'Message', id: 'form_body', type: 'textarea', value: this.state.formValues.form_body }];
+
+	    if (this.state.editing == true) {
+	      fields.push({ type: 'submit', name: 'Update' });
+	    }
+
+	    return React.createElement(
+	      Widget,
+	      { footer: footer },
+	      React.createElement(Form, { handleSubmit: this.handleSubmit, handleChange: this.handleChange, fields: fields })
 	    );
 	  }
 	});
@@ -24861,23 +24923,24 @@
 	    var heading = React.createElement(
 	      "div",
 	      { className: "panel-heading" },
-	      this.props.title,
-	      React.createElement(
-	        "div",
-	        { className: "pull-right" },
-	        this.props.links
-	      )
+	      this.props.heading
 	    );
 
+	    var footer = React.createElement(
+	      "div",
+	      { className: "panel-footer" },
+	      this.props.footer
+	    );
 	    return React.createElement(
 	      "div",
 	      { className: "panel panel-default" },
-	      this.props.title != undefined ? heading : null,
+	      this.props.heading != undefined ? heading : null,
 	      React.createElement(
 	        "div",
 	        { className: "panel-body" },
 	        this.props.children
-	      )
+	      ),
+	      this.props.footer != undefined ? footer : null
 	    );
 	  }
 	});
@@ -24888,42 +24951,30 @@
 /* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
-	var React = __webpack_require__(1);
-	var Widget = __webpack_require__(210);
-	var Form = __webpack_require__(212);
-
-	var SourceForm = React.createClass({
-	  displayName: 'SourceForm',
-
-	  render: function render() {
-	    var placeholderListURL = 'http://www.leboncoin.fr/voitures/offres/ile_de_france/?rs=2008&me=100000&f=p';
-	    var placeholderFormURL = 'http://www2.leboncoin.fr/ar/form/0';
-	    var cancelLink = React.createElement(
-	      'a',
-	      { onClick: this.props.handleHideForm },
-	      React.createElement('i', { className: 'fa fa-remove' })
-	    );
-	    var fields = [{ label: 'List URL', id: 'list_url', placeholder: placeholderListURL, type: 'url', value: this.props.values.list_url }, { label: 'Form URL', id: 'form_url', placeholder: placeholderFormURL, type: 'url', value: this.props.values.form_url }, { label: 'Name', id: 'form_name', placeholder: 'John Doe', type: 'text', value: this.props.values.form_name }, { label: 'Email', id: 'form_email', placeholder: 'john.doe@example.net', type: 'email', value: this.props.values.form_email }, { label: 'Message', id: 'form_body', placeholder: 'Hi, ...', type: 'textarea', value: this.props.values.form_body }, { type: 'submit', id: 'submit', name: 'Add' }];
-
-	    return React.createElement(
-	      Widget,
-	      { title: 'Add source', links: cancelLink },
-	      React.createElement(Form, { handleSubmit: this.props.handleSubmit, handleChange: this.props.handleChange, fields: fields })
-	    );
-	  }
-	});
-
-	module.exports = SourceForm;
-
-/***/ },
-/* 212 */
-/***/ function(module, exports, __webpack_require__) {
-
 	"use strict";
 
 	var React = __webpack_require__(1);
+
+	var Form = React.createClass({
+	  displayName: "Form",
+
+	  render: function render() {
+	    var formFields = _.map(this.props.fields, (function (field, index) {
+	      var component = fieldToComponent(field.type);
+	      var componentProps = _.merge(field, {
+	        handleChange: this.props.handleChange,
+	        key: index
+	      });
+	      return component(componentProps);
+	    }).bind(this));
+
+	    return React.createElement(
+	      "form",
+	      { className: "form-horizontal", onSubmit: this.props.handleSubmit },
+	      formFields
+	    );
+	  }
+	});
 
 	var Field = React.createClass({
 	  displayName: "Field",
@@ -24948,11 +24999,10 @@
 	  }
 	});
 
-	var Input = React.createClass({
+	Form.Input = React.createClass({
 	  displayName: "Input",
 
 	  render: function render() {
-	    console.log(this.props.handleChange);
 	    return React.createElement(
 	      Field,
 	      { label: this.props.label },
@@ -24968,7 +25018,7 @@
 	  }
 	});
 
-	var Textarea = React.createClass({
+	Form.Textarea = React.createClass({
 	  displayName: "Textarea",
 
 	  render: function render() {
@@ -24986,7 +25036,7 @@
 	  }
 	});
 
-	var Submit = React.createClass({
+	Form.Submit = React.createClass({
 	  displayName: "Submit",
 
 	  render: function render() {
@@ -25002,43 +25052,57 @@
 	  }
 	});
 
-	var fieldToComponent = function fieldToComponent(fieldType) {
-	  var component = Input;
+	function fieldToComponent(fieldType) {
+	  var component = Form.Input;
 	  switch (fieldType) {
 	    case "textarea":
-	      component = Textarea;
+	      component = Form.Textarea;
 	      break;
 	    case "submit":
-	      component = Submit;
+	      component = Form.Submit;
 	      break;
 	    default:
-	      component = Input;
+	      component = Form.Input;
 	  }
 	  return React.createFactory(component);
 	};
 
-	var Form = React.createClass({
-	  displayName: "Form",
+	Form.fieldToComponent = fieldToComponent;
+
+	module.exports = Form;
+
+/***/ },
+/* 212 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var Widget = __webpack_require__(210);
+	var Form = __webpack_require__(211);
+
+	var SourceForm = React.createClass({
+	  displayName: 'SourceForm',
 
 	  render: function render() {
-	    var formFields = _.map(this.props.fields, (function (field, index) {
-	      var component = fieldToComponent(field.type);
-	      var componentProps = _.merge(field, {
-	        handleChange: this.props.handleChange,
-	        key: index
-	      });
-	      return component(componentProps);
-	    }).bind(this));
+	    var placeholderListURL = 'http://www.leboncoin.fr/voitures/offres/ile_de_france/?rs=2008&me=100000&f=p';
+	    var placeholderFormURL = 'http://www2.leboncoin.fr/ar/form/0';
+	    var cancelLink = React.createElement(
+	      'a',
+	      { onClick: this.props.handleHideForm },
+	      React.createElement('i', { className: 'fa fa-remove' })
+	    );
+	    var fields = [{ label: 'List URL', id: 'list_url', placeholder: placeholderListURL, type: 'url', value: this.props.values.list_url }, { label: 'Form URL', id: 'form_url', placeholder: placeholderFormURL, type: 'url', value: this.props.values.form_url }, { label: 'Name', id: 'form_name', placeholder: 'John Doe', type: 'text', value: this.props.values.form_name }, { label: 'Email', id: 'form_email', placeholder: 'john.doe@example.net', type: 'email', value: this.props.values.form_email }, { label: 'Message', id: 'form_body', placeholder: 'Hi, ...', type: 'textarea', value: this.props.values.form_body }, { type: 'submit', id: 'submit', name: 'Add' }];
 
 	    return React.createElement(
-	      "form",
-	      { className: "form-horizontal", onSubmit: this.props.handleSubmit },
-	      formFields
+	      Widget,
+	      { title: 'Add source', links: cancelLink },
+	      React.createElement(Form, { handleSubmit: this.props.handleSubmit, handleChange: this.props.handleChange, fields: fields })
 	    );
 	  }
 	});
 
-	module.exports = Form;
+	module.exports = SourceForm;
 
 /***/ }
 /******/ ]);

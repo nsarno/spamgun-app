@@ -23,7 +23,9 @@ a {
   }
 }
 
-.panel > .panel-body {
+.panel > .panel-body,
+.panel > .panel-heading,
+.panel > .panel-footer {
   .btn {
     margin-right: 5px;
   }

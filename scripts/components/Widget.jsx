@@ -4,19 +4,22 @@ var Widget = React.createClass({
   render: function() {
     var heading = (
       <div className="panel-heading">
-        {this.props.title}
-        <div className="pull-right">
-          {this.props.links}
-        </div>
+        {this.props.heading}
       </div>
     );
     
+    var footer = (
+      <div className="panel-footer">
+        {this.props.footer}
+      </div>
+    );
     return (
       <div className="panel panel-default">
-        {this.props.title != undefined ? heading : null}
+        {this.props.heading != undefined ? heading : null}
         <div className="panel-body">
           {this.props.children}
         </div>
+        {this.props.footer != undefined ? footer : null}
       </div>
     );
   }
