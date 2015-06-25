@@ -109,6 +109,28 @@ var DashboardActions = {
           data: { id: key, error: error }
         });
       });
+  },
+
+  spamSource: function(source) {
+    var key = source.id;
+    Dispatcher.dispatch({
+      type: Constants.SPAM_SOURCE,
+      data: source
+    });
+    ParrotClient.spamSource(source,
+      function(job) {
+        Dispatcher.dispatch({
+          type: Constants.SPAM_SOURCE_SUCCESS,
+          data: { id: key, job: job }
+        });
+      },
+      function(error) {
+        console.log('spam error');
+        Dispatcher.dispatch({
+          type: Constants.SPAM_SOURCE_FAILURE,
+          data: { id: key, error: error }
+        });
+      });
   }
 };
 

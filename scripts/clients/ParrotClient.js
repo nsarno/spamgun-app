@@ -44,6 +44,19 @@ var ParrotClient = {
     $.post(baseURL + "/jobs", data)
       .done(success)
       .fail(failure);
+  },
+
+  spamSource: function(source, success, failure) {
+    var data = { 
+      job: {
+        name: 'spammer',
+        source_id: source.data.id
+      }
+    };
+
+    $.post(baseURL + "/jobs", data)
+      .done(success)
+      .fail(failure);
   }
 }
 

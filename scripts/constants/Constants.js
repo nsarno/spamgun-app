@@ -22,4 +22,8 @@ module.exports = keymirror({
   SCRAP_SOURCE: null,
   SCRAP_SOURCE_SUCCESS: null,
   SCRAP_SOURCE_FAILURE: null,
+
+  SPAM_SOURCE: null,
+  SPAM_SOURCE_SUCCESS: null,
+  SPAM_SOURCE_FAILURE: null,
 });

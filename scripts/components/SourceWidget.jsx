@@ -76,6 +76,7 @@ var SourceWidget = React.createClass({
   },
 
   handleRunSpammer: function(key) {
+    DashboardActions.spamSource(this.props.source);
   },
 
   render: function() {
