@@ -37,6 +37,16 @@ a {
   padding: 10px;
 }
 
+.panel > .panel-footer .data-display.pull-right {
+  border-left: 1px solid $silver;
+  border-right: 0;
+}
+
+.btn-none {
+  cursor: default;
+  background-color: transparent;
+}
+
 .spinner {
   width: 100%;
   text-align: center;

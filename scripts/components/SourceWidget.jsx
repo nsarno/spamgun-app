@@ -80,6 +80,8 @@ var SourceWidget = React.createClass({
 
   render: function() {
     var key = this.props.source.id;
+    var pendingCount = this.props.source.data.pending_count;
+    var repliedCount = this.props.source.data.replied_count;
 
     // Edit source form fields
     var fields = [
@@ -88,16 +90,18 @@ var SourceWidget = React.createClass({
       {label: 'Email', id: 'form_email', type: 'email', value: this.state.formValues.form_email},
       {label: 'Message', id: 'form_body', type: 'textarea', value: this.state.formValues.form_body},
     ];
+
     var settingsBtnClasses = classNames('btn', 'btn-default', {
       active: this.state.showSettings
     });
+
     var actions = (
       <div className="actions pull-right">
         <button className="btn btn-default btn-primary" onClick={this.handleRunScrapper.bind(null, key)}>
-          <i className="fa fa-binoculars"></i> Run scrapper
+          <i className="fa fa-binoculars"></i> Run Scrapper
         </button>
         <button className="btn btn-default btn-danger" onClick={this.handleRunSpammer.bind(null, key)}>
-          <i className="fa fa-send"></i> Run spammer
+          <i className="fa fa-send"></i> Run Spammer <span className="badge">{pendingCount}</span>
         </button>
         <button className={settingsBtnClasses} onClick={this.handleToggleSettings}>
           <i className="fa fa-cog"></i>
@@ -155,12 +159,14 @@ var SourceWidget = React.createClass({
       );      
     }
 
-    var pendingCount = this.props.source.data.pending_count;
-    var repliedCount = this.props.source.data.replied_count;
     var footer = (
       <div>
-        <div className="data-display">Pending ads <span className="badge">{pendingCount}</span></div>
-        <div className="data-display">Replied ads <span className="badge">{repliedCount}</span></div>
+        <div className="data-display">
+          Pending ads <span className="badge">{pendingCount}</span>
+        </div>
+        <div className="data-display">
+          Replies sent <span className="badge">{repliedCount}</span>
+        </div>
       </div>
     );
     
