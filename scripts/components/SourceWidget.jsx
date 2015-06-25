@@ -57,7 +57,7 @@ var SourceWidget = React.createClass({
   },
 
   handleUpdate: function() {
-    DashboardActions.updateSource(this.props.source.id, this.props.source.data.id, this.state.formValues);
+    DashboardActions.updateSource(this.props.source.key, this.props.source.data.id, this.state.formValues);
   },
 
   handleCancelUpdate: function() {
@@ -80,7 +80,7 @@ var SourceWidget = React.createClass({
   },
 
   render: function() {
-    var key = this.props.source.id;
+    var key = this.props.source.key;
     var pendingCount = this.props.source.data.pending_count;
     var repliedCount = this.props.source.data.replied_count;
 
@@ -96,17 +96,53 @@ var SourceWidget = React.createClass({
       active: this.state.showSettings
     });
 
-    var actions = (
-      <div className="actions pull-right">
-        <button className="btn btn-default btn-primary" onClick={this.handleRunScrapper.bind(null, key)}>
+    if (this.props.source.data.scrapping) {
+      var scrapButton = (
+        <button className="btn btn-default btn-primary disabled" onClick={this.handleRunScrapper}>
+          <i className="fa fa-circle-o-notch fa-spin"></i> Scrapping...
+        </button>
+      );      
+    } else {
+      var scrapButton = (
+        <button className="btn btn-default btn-primary" onClick={this.handleRunScrapper}>
           <i className="fa fa-binoculars"></i> Run Scrapper
         </button>
-        <button className="btn btn-default btn-danger" onClick={this.handleRunSpammer.bind(null, key)}>
+      );
+    }
+
+    if (this.props.source.data.spamming) {
+      var spamButton = (
+        <button className="btn btn-default btn-danger disabled" onClick={this.handleRunSpammer}>
+          <i className="fa fa-circle-o-notch fa-spin"></i> Spamming...
+        </button>
+      );      
+    } else {
+      var spamButton = (
+        <button className="btn btn-default btn-danger" onClick={this.handleRunSpammer}>
           <i className="fa fa-send"></i> Run Spammer <span className="badge">{pendingCount}</span>
         </button>
+      );
+    }
+
+    if (this.state.showSettings) {
+      var settingsButton = (
+        <button className={settingsBtnClasses} onClick={this.handleToggleSettings}>
+          <i className="fa fa-cog fa-spin"></i>
+        </button>
+      );
+    } else {
+      var settingsButton = (
         <button className={settingsBtnClasses} onClick={this.handleToggleSettings}>
           <i className="fa fa-cog"></i>
         </button>
+      );
+    }
+
+    var actions = (
+      <div className="actions pull-right">
+        {scrapButton}
+        {spamButton}
+        {settingsButton}
       </div>
     );
 

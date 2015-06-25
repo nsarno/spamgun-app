@@ -23,24 +23,45 @@ var DashboardActions = {
     );
   },
 
+  refreshSource: function(key, id) {
+    Dispatcher.dispatch({
+      type: Constants.LOAD_SOURCE,
+      data: { key: key }
+    });
+    ParrotClient.refreshSource(id,
+      function(source) {
+        Dispatcher.dispatch({
+          type: Constants.LOAD_SOURCES_SUCCESS,
+          data: { key: key, source: source }
+        });
+      },
+      function(error) {
+        Dispatcher.dispatch({
+          type: Constants.LOAD_SOURCES_FAILURE,
+          data: { key: key, error: error }
+        });
+      }
+    );
+  },
+
   addSource: function(data) {
     var key = _.uniqueId();
 
     Dispatcher.dispatch({
       type: Constants.ADD_SOURCE,
-      data: { id: key, source: data.source }
+      data: { key: key, source: data.source }
     });
     ParrotClient.addSource(data,
       function(source) {
         Dispatcher.dispatch({
           type: Constants.ADD_SOURCE_SUCCESS,
-          data: { id: key, source: source }
+          data: { key: key, source: source }
         });
       }.bind(this),
       function(error) {
         Dispatcher.dispatch({
           type: Constants.ADD_SOURCE_FAILURE,
-          data: { id: key, error: error }
+          data: { key: key, error: error }
         });
       }.bind(this)
     );
@@ -78,13 +99,13 @@ var DashboardActions = {
       function() {
         Dispatcher.dispatch({
           type: Constants.REMOVE_SOURCE_SUCCESS,
-          data: { id: key }
+          data: { key: key }
         });
       }.bind(this),
       function(error) {
         Dispatcher.dispatch({
           type: Constants.ADD_SOURCE_FAILURE,
-          data: { id: key, error: error }
+          data: { key: key, error: error }
         });
       }.bind(this)
     );
@@ -100,13 +121,13 @@ var DashboardActions = {
       function(job) {
         Dispatcher.dispatch({
           type: Constants.SCRAP_SOURCE_SUCCESS,
-          data: { id: key, job: job }
+          data: { key: key, job: job }
         });
       },
       function(error) {
         Dispatcher.dispatch({
           type: Constants.SCRAP_SOURCE_FAILURE,
-          data: { id: key, error: error }
+          data: { key: key, error: error }
         });
       });
   },
@@ -121,14 +142,14 @@ var DashboardActions = {
       function(job) {
         Dispatcher.dispatch({
           type: Constants.SPAM_SOURCE_SUCCESS,
-          data: { id: key, job: job }
+          data: { key: key, job: job }
         });
       },
       function(error) {
         console.log('spam error');
         Dispatcher.dispatch({
           type: Constants.SPAM_SOURCE_FAILURE,
-          data: { id: key, error: error }
+          data: { key: key, error: error }
         });
       });
   }

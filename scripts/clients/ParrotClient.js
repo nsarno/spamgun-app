@@ -10,6 +10,12 @@ var ParrotClient = {
       .fail(failure);
   },
 
+  refreshSource: function(id, success, failure) {
+    $.get(baseURL + "/sources/" + id)
+      .done(success)
+      .fail(failure);
+  },
+
   addSource: function(data, success, failure) {
     $.post(baseURL + "/sources", data)
       .done(success)

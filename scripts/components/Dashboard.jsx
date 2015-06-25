@@ -80,7 +80,7 @@ var Dashboard = React.createClass({
     );
     var sources = _.map(this.state.sources, function(source) {
       return (
-        <SourceWidget key={source.id} source={source} />
+        <SourceWidget key={source.key} source={source} />
       );
     }.bind(this));
 
