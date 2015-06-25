@@ -86,8 +86,6 @@ var Dashboard = React.createClass({
 
     return (
       <div id="dashboard" className="container">
-        <DocumentTitle title="Dashboard" />
-        <h1>Dashboard</h1>
         {SourceStore.loading ? spinner : sources}
         {this.state.addingSource ? sourceForm : newSourceLink}
       </div>
