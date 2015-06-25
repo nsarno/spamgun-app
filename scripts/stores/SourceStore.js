@@ -1,6 +1,7 @@
 var Dispatcher = require('Dispatcher');
 var Constants = require('Constants');
 var EventEmitter = require('events').EventEmitter;
+var DashboardActions = require('DashboardActions');
 
 var SourceStore = _.assign({}, EventEmitter.prototype, {
   loading: false,
@@ -17,6 +18,10 @@ var SourceStore = _.assign({}, EventEmitter.prototype, {
 
   getSources: function() {
     return this.sources;
+  },
+
+  getSource: function(key) {
+    return this.sources[key];
   },
 
   onLoadSources: function() {
@@ -49,7 +54,7 @@ var SourceStore = _.assign({}, EventEmitter.prototype, {
 
   onRefreshSourceSuccess: function(payload) {
     this.sources[payload.key].status = 'ok';
-    this.sources[payload.key].source = payload.source;
+    this.sources[payload.key].data = payload.source;
     this.emit(Constants.CHANGE);
   },
 
@@ -108,28 +113,36 @@ var SourceStore = _.assign({}, EventEmitter.prototype, {
   },
 
   onScrapSource: function(payload) {
-    console.log('scrap source');
-    console.log(this.sources[payload.key]);
-    this.sources[payload.key].status = 'scrapping';
+    this.sources[payload.key].status = 'run_scrapper';
     this.emit(Constants.CHANGE);
   },
 
   onScrapSourceSuccess: function(payload) {
-    console.log('scrap source success');
-    console.log(payload);
     this.sources[payload.key].status = 'ok';
-    this.sources[payload.key].data.jobs.push(payload.job);
     this.emit(Constants.CHANGE);
   },
 
   onScrapSourceError: function(payload) {
-    console.log('scrap source error');
-    console.log(this.sources[payload.key]);
+    this.sources[payload.key].status = 'error';
+    this.sources[payload.key].error = payload.error;
+    this.emit(Constants.CHANGE);
+  },
+
+  onSpamSource: function(payload) {
+    this.sources[payload.key].status = 'run_spammer';
+    this.emit(Constants.CHANGE);
+  },
+
+  onSpamSourceSuccess: function(payload) {
+    this.sources[payload.key].status = 'ok';
+    this.emit(Constants.CHANGE);
+  },
+
+  onSpamSourceError: function(payload) {
     this.sources[payload.key].status = 'error';
     this.sources[payload.key].error = payload.error;
     this.emit(Constants.CHANGE);
   }
-
 });
 
 Dispatcher.register(function(payload) {
@@ -204,6 +217,18 @@ Dispatcher.register(function(payload) {
 
     case Constants.SCRAP_SOURCE_ERROR:
       SourceStore.onScrapSourceError(payload.data);
+      break;
+
+    case Constants.SPAM_SOURCE:
+      SourceStore.onSpamSource(payload.data);
+      break;
+
+    case Constants.SPAM_SOURCE_SUCCESS:
+      SourceStore.onSpamSourceSuccess(payload.data);
+      break;
+
+    case Constants.SPAM_SOURCE_ERROR:
+      SourceStore.onSpamSourceError(payload.data);
       break;
 
     default:

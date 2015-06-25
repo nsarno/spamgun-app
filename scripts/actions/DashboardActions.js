@@ -30,11 +30,16 @@ var DashboardActions = {
     });
     ParrotClient.refreshSource(id,
       function(source) {
+        if (source.processing) {
+          setTimeout(function() {
+            this.refreshSource(key, id);
+          }.bind(this), 5 * 1000);
+        };
         Dispatcher.dispatch({
           type: Constants.REFRESH_SOURCE_SUCCESS,
           data: { key: key, source: source }
         });
-      },
+      }.bind(this),
       function(error) {
         Dispatcher.dispatch({
           type: Constants.REFRESH_SOURCE_FAILURE,
@@ -123,7 +128,8 @@ var DashboardActions = {
           type: Constants.SCRAP_SOURCE_SUCCESS,
           data: { key: key, job: job }
         });
-      },
+        this.refreshSource(key, source.data.id);
+      }.bind(this),
       function(error) {
         Dispatcher.dispatch({
           type: Constants.SCRAP_SOURCE_FAILURE,
@@ -144,7 +150,8 @@ var DashboardActions = {
           type: Constants.SPAM_SOURCE_SUCCESS,
           data: { key: key, job: job }
         });
-      },
+        this.refreshSource(key, source.data.id);
+      }.bind(this),
       function(error) {
         Dispatcher.dispatch({
           type: Constants.SPAM_SOURCE_FAILURE,

@@ -23,7 +23,7 @@ var SourceWidget = React.createClass({
 
     return ({
       editing: false,
-      refreshing: false,
+      refreshAuto: false,
       showSettings: false,
       formValues: this.initialFormValues()
     });
@@ -46,12 +46,14 @@ var SourceWidget = React.createClass({
     });
   },
 
-  handleRefresh: function() {
-    DashboardActions.refreshSource(this.props.source.key, this.props.source.data.id);
+  onSourceChange: function() {
+    this.setState({
+      editing: this.props.source.status == 'ok' ? false : this.state.editing,
+    });
   },
 
-  onSourceChange: function() {
-    this.setState({editing: this.props.source.status == 'ok' ? false : this.state.editing});
+  handleRefresh: function() {
+    DashboardActions.refreshSource(this.props.source.key, this.props.source.data.id);
   },
 
   handleChange: function(event) {
@@ -99,10 +101,16 @@ var SourceWidget = React.createClass({
 
     if (this.props.source.data.scrapping) {
       var scrapButton = (
-        <button className="btn btn-default btn-primary disabled" onClick={this.handleRunScrapper}>
+        <button className="btn btn-default btn-primary disabled">
           <i className="fa fa-circle-o-notch fa-spin"></i> Scrapping...
         </button>
       );      
+    } else if (this.props.source.data.scrap_pending) {
+      var scrapButton = (
+        <button className="btn btn-default btn-primary disabled">
+          <i className="fa fa-binoculars"></i> Pending...
+        </button>
+      );
     } else {
       var scrapButton = (
         <button className="btn btn-default btn-primary" onClick={this.handleRunScrapper}>
@@ -113,10 +121,16 @@ var SourceWidget = React.createClass({
 
     if (this.props.source.data.spamming) {
       var spamButton = (
-        <button className="btn btn-default btn-danger disabled" onClick={this.handleRunSpammer}>
+        <button className="btn btn-default btn-danger disabled">
           <i className="fa fa-circle-o-notch fa-spin"></i> Spamming...
         </button>
-      );      
+      );    
+    } else if (this.props.source.data.spam_pending) {
+      var spamButton = (
+        <button className="btn btn-default btn-danger disabled">
+          <i className="fa fa-send"></i> Pending...
+        </button>
+      );    
     } else {
       var spamButton = (
         <button className="btn btn-default btn-danger" onClick={this.handleRunSpammer}>
@@ -139,7 +153,7 @@ var SourceWidget = React.createClass({
       );
     }
 
-    if (this.props.source.status == 'refreshing') {
+    if (this.props.source.data.processing) {
       var refreshButton = (
         <button className="btn btn-default" onClick={this.handleRefresh}>
           <i className="fa fa-refresh fa-spin"></i>
