@@ -1,7 +1,7 @@
 'use strict';
 
-// var baseURL = "https://parrot-api.herokuapp.com";
-var baseURL = "http://localhost:5000";
+var baseURL = "https://parrot-api.herokuapp.com";
+// var baseURL = "http://localhost:5000";
 
 var ParrotClient = {
   loadSources: function(success, failure) {
