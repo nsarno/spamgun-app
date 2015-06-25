@@ -23,6 +23,7 @@ var SourceWidget = React.createClass({
 
     return ({
       editing: false,
+      refreshing: false,
       showSettings: false,
       formValues: this.initialFormValues()
     });
@@ -43,6 +44,10 @@ var SourceWidget = React.createClass({
     this.setState({
       showSettings: !this.state.showSettings
     });
+  },
+
+  handleRefresh: function() {
+    DashboardActions.refreshSource(this.props.source.key, this.props.source.data.id);
   },
 
   onSourceChange: function() {
@@ -71,11 +76,11 @@ var SourceWidget = React.createClass({
     DashboardActions.removeSource(this.props.source);
   },
 
-  handleRunScrapper: function(key) {
+  handleRunScrapper: function() {
     DashboardActions.scrapSource(this.props.source);
   },
 
-  handleRunSpammer: function(key) {
+  handleRunSpammer: function() {
     DashboardActions.spamSource(this.props.source);
   },
 
@@ -91,10 +96,6 @@ var SourceWidget = React.createClass({
       {label: 'Email', id: 'form_email', type: 'email', value: this.state.formValues.form_email},
       {label: 'Message', id: 'form_body', type: 'textarea', value: this.state.formValues.form_body},
     ];
-
-    var settingsBtnClasses = classNames('btn', 'btn-default', {
-      active: this.state.showSettings
-    });
 
     if (this.props.source.data.scrapping) {
       var scrapButton = (
@@ -126,14 +127,28 @@ var SourceWidget = React.createClass({
 
     if (this.state.showSettings) {
       var settingsButton = (
-        <button className={settingsBtnClasses} onClick={this.handleToggleSettings}>
+        <button className="btn btn-default" onClick={this.handleToggleSettings}>
           <i className="fa fa-cog fa-spin"></i>
         </button>
       );
     } else {
       var settingsButton = (
-        <button className={settingsBtnClasses} onClick={this.handleToggleSettings}>
+        <button className="btn btn-default" onClick={this.handleToggleSettings}>
           <i className="fa fa-cog"></i>
+        </button>
+      );
+    }
+
+    if (this.props.source.status == 'refreshing') {
+      var refreshButton = (
+        <button className="btn btn-default" onClick={this.handleRefresh}>
+          <i className="fa fa-refresh fa-spin"></i>
+        </button>
+      );
+    } else {
+      var refreshButton = (
+        <button className="btn btn-default" onClick={this.handleRefresh}>
+          <i className="fa fa-refresh"></i>
         </button>
       );
     }
@@ -143,6 +158,7 @@ var SourceWidget = React.createClass({
         {scrapButton}
         {spamButton}
         {settingsButton}
+        {refreshButton}
       </div>
     );
 

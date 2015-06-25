@@ -29,8 +29,8 @@ var SourceStore = _.assign({}, EventEmitter.prototype, {
     this.error = null;
     this.sources = payload.sources;
     this.sources = payload.sources.reduce(function(acc, source) {
-      var id = _.uniqueId();
-      acc[id] = { id: id, data: source, status: 'ok' };
+      var key = source.id;
+      acc[key] = { key: key, data: source, status: 'ok' };
       return acc;
     }, {});
     this.emit(Constants.CHANGE);
@@ -42,20 +42,37 @@ var SourceStore = _.assign({}, EventEmitter.prototype, {
     this.emit(Constants.CHANGE);
   },
 
+  onRefreshSource: function(payload) {
+    this.sources[payload.key].status = 'refreshing';
+    this.emit(Constants.CHANGE);
+  },
+
+  onRefreshSourceSuccess: function(payload) {
+    this.sources[payload.key].status = 'ok';
+    this.sources[payload.key].source = payload.source;
+    this.emit(Constants.CHANGE);
+  },
+
+  onRefreshSourceError: function(payload) {
+    this.sources[payload.key].status = 'error';
+    this.sources[payload.key].error = payload.error;
+    this.emit(Constants.CHANGE);
+  },
+
   onAddSource: function(payload) {
-    this.sources[payload.id] = { id: payload.id, data: payload.source, status: 'adding' };
+    this.sources[payload.key] = { key: payload.key, data: payload.source, status: 'adding' };
     this.emit(Constants.CHANGE);
   },
 
   onAddSourceSuccess: function(payload) {
-    this.sources[payload.id].status = 'ok';
-    this.sources[payload.id].data = payload.source;
+    this.sources[payload.key].status = 'ok';
+    this.sources[payload.key].data = payload.source;
     this.emit(Constants.CHANGE);
   },
 
   onAddSourceError: function(payload) {
-    this.sources[payload.id].status = 'error';
-    this.sources[payload.id].error = payload.error;
+    this.sources[payload.key].status = 'error';
+    this.sources[payload.key].error = payload.error;
     this.emit(Constants.CHANGE);
   },
 
@@ -75,35 +92,41 @@ var SourceStore = _.assign({}, EventEmitter.prototype, {
   },
 
   onRemoveSource: function(payload) {
-    this.sources[payload.id].status = 'removing';
+    this.sources[payload.key].status = 'removing';
     this.emit(Constants.CHANGE);
   },
 
   onRemoveSourceSuccess: function(payload) {
-    delete this.sources[payload.id]
+    delete this.sources[payload.key]
     this.emit(Constants.CHANGE);
   },
 
   onRemoveSourceError: function(payload) {
-    this.sources[payload.id].status = 'error';
-    this.sources[payload.id].error = payload.error;
+    this.sources[payload.key].status = 'error';
+    this.sources[payload.key].error = payload.error;
     this.emit(Constants.CHANGE);
   },
 
   onScrapSource: function(payload) {
-    this.sources[payload.id].status = 'scrapping';
+    console.log('scrap source');
+    console.log(this.sources[payload.key]);
+    this.sources[payload.key].status = 'scrapping';
     this.emit(Constants.CHANGE);
   },
 
   onScrapSourceSuccess: function(payload) {
-    this.sources[payload.id].status = 'ok';
-    this.sources[payload.id].data.jobs.push(payload.job);
+    console.log('scrap source success');
+    console.log(payload);
+    this.sources[payload.key].status = 'ok';
+    this.sources[payload.key].data.jobs.push(payload.job);
     this.emit(Constants.CHANGE);
   },
 
   onScrapSourceError: function(payload) {
-    this.sources[payload.id].status = 'error';
-    this.sources[payload.id].error = payload.error;
+    console.log('scrap source error');
+    console.log(this.sources[payload.key]);
+    this.sources[payload.key].status = 'error';
+    this.sources[payload.key].error = payload.error;
     this.emit(Constants.CHANGE);
   }
 
@@ -121,6 +144,18 @@ Dispatcher.register(function(payload) {
 
     case Constants.LOAD_SOURCES_ERROR:
       SourceStore.onLoadSourcesError(payload.data);
+      break;
+
+    case Constants.REFRESH_SOURCE:
+      SourceStore.onRefreshSource(payload.data);
+      break;
+
+    case Constants.REFRESH_SOURCE_SUCCESS:
+      SourceStore.onRefreshSourceSuccess(payload.data);
+      break;
+
+    case Constants.REFRESH_SOURCE_ERROR:
+      SourceStore.onRefreshSourceError(payload.data);
       break;
 
     case Constants.ADD_SOURCE:

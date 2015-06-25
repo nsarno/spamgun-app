@@ -25,19 +25,19 @@ var DashboardActions = {
 
   refreshSource: function(key, id) {
     Dispatcher.dispatch({
-      type: Constants.LOAD_SOURCE,
+      type: Constants.REFRESH_SOURCE,
       data: { key: key }
     });
     ParrotClient.refreshSource(id,
       function(source) {
         Dispatcher.dispatch({
-          type: Constants.LOAD_SOURCES_SUCCESS,
+          type: Constants.REFRESH_SOURCE_SUCCESS,
           data: { key: key, source: source }
         });
       },
       function(error) {
         Dispatcher.dispatch({
-          type: Constants.LOAD_SOURCES_FAILURE,
+          type: Constants.REFRESH_SOURCE_FAILURE,
           data: { key: key, error: error }
         });
       }
@@ -89,7 +89,7 @@ var DashboardActions = {
   },
 
   removeSource: function(source) {
-    var key = source.id;
+    var key = source.key;
 
     Dispatcher.dispatch({
       type: Constants.REMOVE_SOURCE,
@@ -112,7 +112,7 @@ var DashboardActions = {
   },
 
   scrapSource: function(source) {
-    var key = source.id;
+    var key = source.key;
     Dispatcher.dispatch({
       type: Constants.SCRAP_SOURCE,
       data: source
@@ -133,7 +133,7 @@ var DashboardActions = {
   },
 
   spamSource: function(source) {
-    var key = source.id;
+    var key = source.key;
     Dispatcher.dispatch({
       type: Constants.SPAM_SOURCE,
       data: source
@@ -146,7 +146,6 @@ var DashboardActions = {
         });
       },
       function(error) {
-        console.log('spam error');
         Dispatcher.dispatch({
           type: Constants.SPAM_SOURCE_FAILURE,
           data: { key: key, error: error }
