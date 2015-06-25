@@ -56,14 +56,15 @@ var Dashboard = React.createClass({
     });
   },
 
-  handleRemoveSource: function(id) {
-    DashboardActions.removeSource(this.state.sources[id]);
+  handleRemoveSource: function(key) {
+    DashboardActions.removeSource(this.state.sources[key]);
   },
 
-  handleRunScrapper: function(id) {
+  handleRunScrapper: function(key) {
+    DashboardActions.scrapSource(this.state.sources[key]);
   },
 
-  handleRunSpammer: function(id) {
+  handleRunSpammer: function(key) {
   },
 
   handleChange: function(event) {

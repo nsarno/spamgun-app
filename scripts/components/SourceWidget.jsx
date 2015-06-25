@@ -1,63 +1,10 @@
 var React = require('react');
+var classNames = require('classnames');
 var Widget = require('Widget');
 var Form = require('Form');
 
 var DashboardActions = require('DashboardActions');
 var SourceStore = require('SourceStore');
-
-function getLocation(href) {
-  var l = document.createElement("a");
-  l.href = href;
-  return l;
-};
-
-var Table = React.createClass({
-  render: function() {
-    var rows = _.map(this.props.data, function(row, index) {
-      return (
-        <tr key={index}>
-          <th>{row[0]}</th>
-          <td>{row[1]}</td>
-        </tr>
-      );
-    });
-
-    return (
-      <table className="table borderless">
-        <tbody>
-          {rows}
-        </tbody>
-      </table>
-    );
-  }
-});
-
-Table.Input = React.createClass({
-  render: function() {
-    return (
-      <input
-        onChange={this.props.handleChange}
-        className="form-control"
-        type={this.props.type}
-        id={this.props.id}
-        value={this.props.value}
-      />
-    );
-  }
-});
-
-Table.Textarea = React.createClass({
-  render: function() {
-    return (
-      <textarea
-        onChange={this.props.handleChange}
-        className="form-control"
-        id={this.props.id}
-        value={this.props.value}
-      />
-    );
-  }
-});
 
 var SourceWidget = React.createClass({
   initialFormValues: function() {
@@ -90,13 +37,7 @@ var SourceWidget = React.createClass({
   },
 
   onSourceChange: function() {
-    var editing = this.state.editing;
-    if (this.props.source.status == 'ok') {
-      editing = false;
-    }
-    this.setState({
-      editing: editing
-    });
+    this.setState({editing: this.props.source.status == 'ok' ? false : this.state.editing});
   },
 
   handleChange: function(event) {
@@ -127,63 +68,95 @@ var SourceWidget = React.createClass({
   },
 
   render: function() {
-    var id = this.props.source.id;
+    var key = this.props.source.id;
 
-    // var listURL = getLocation(this.props.source.data.list_url);
-    // var title = listURL.hostname;
-
-    var footer = (
-      <div>
-        <button className={"btn btn-default" + (this.state.showSettings ? "active" : "")} onClick={this.handleToggleSettings}>
-          <i className="fa fa-cog"></i>
-        </button>
-        <button className="btn btn-default btn-primary" onClick={this.props.handleRunScrapper.bind(null, id)}>
-          <i className="fa fa-binoculars"></i> Run scrapper
-        </button>
-        <button className="btn btn-default btn-danger" onClick={this.props.handleRunSpammer.bind(null, id)}>
-          <i className="fa fa-send"></i> Run spammer
-        </button>
-
-        <button className="btn btn-default btn-danger pull-right" onClick={this.props.handleRemoveSource.bind(null, id)}>
-          <i className="fa fa-trash"></i> Destroy
-        </button>
-      </div>
-    );
-
+    // Edit source form fields
     var fields = [
-      {label: 'List URL', id: 'list_url', type: 'url', value: this.state.formValues.list_url},
       {label: 'Form URL', id: 'form_url', type: 'url', value: this.state.formValues.form_url},
       {label: 'Name', id: 'form_name', type: 'text', value: this.state.formValues.form_name},
       {label: 'Email', id: 'form_email', type: 'email', value: this.state.formValues.form_email},
       {label: 'Message', id: 'form_body', type: 'textarea', value: this.state.formValues.form_body},
     ];
+    var settingsBtnClasses = classNames('btn', 'btn-default', {
+      active: this.state.showSettings
+    });
+    var actions = (
+      <div className="actions pull-right">
+        <button className="btn btn-default btn-primary" onClick={this.props.handleRunScrapper.bind(null, key)}>
+          <i className="fa fa-binoculars"></i> Run scrapper
+        </button>
+        <button className="btn btn-default btn-danger" onClick={this.props.handleRunSpammer.bind(null, key)}>
+          <i className="fa fa-send"></i> Run spammer
+        </button>
+        <button className={settingsBtnClasses} onClick={this.handleToggleSettings}>
+          <i className="fa fa-cog"></i>
+        </button>
+      </div>
+    );
 
-    if (this.state.editing == true) {
-      var updateOrCancel = (
-        <div>
-          <button className="btn btn-default btn-primary" onClick={this.handleUpdate}>
-            {this.props.source.status == 'updating' ? <i className="fa fa-spinner fa-pulse"></i> : 'Update'}
-          </button>
-          <button className="btn btn-default btn-default" onClick={this.handleCancelUpdate}>Cancel</button>
+    var body = (
+      <div className="container-fluid">
+        <div className="row">
+          <a className="btn" href={this.props.source.data.list_url}>
+            <i className="fa fa-terminal"></i> {this.props.source.data.list_url}
+          </a>
+          {actions}
         </div>
-      );
-    }
+      </div>
+    );
 
     if (this.state.showSettings == true) {
-      var settings = <Form handleSubmit={this.handleUpdate} handleChange={this.handleChange} fields={fields} />
-    } else {
-      var info = (
-        <div>
-          <i className="fa fa-file-o"></i><span> </span>
-          <a href={this.props.source.data.list_url}>{this.props.source.data.list_url}</a>
+      if (this.state.editing == true) {
+        var updateOrCancel = (
+          <div>
+            <button className="btn btn-default btn-primary" onClick={this.handleUpdate}>
+              {this.props.source.status == 'updating' ? <i className="fa fa-spinner fa-pulse"></i> : 'Update'}
+            </button>
+            <button className="btn btn-default btn-default" onClick={this.handleCancelUpdate}>Cancel</button>
+          </div>
+        );
+      }
+      var settings = (
+        <div className="settings">
+          <Form
+            handleSubmit={this.handleUpdate}
+            handleChange={this.handleChange}
+            fields={fields}
+          />
+          {updateOrCancel}
+          <div className="danger-zone">
+            <div className="panel panel-danger">
+              <div className="panel-heading">
+                Danger Zone
+              </div>
+              <div className="panel-body">
+                <h4>Delete this source</h4>
+                <p className="btn-align pull-left">
+                  Once you delete a source, there is no going back. And all the ads history linked to it will be destroyed.
+                </p>
+                <button className="btn btn-default btn-danger pull-right" onClick={this.props.handleRemoveSource.bind(null, key)}>
+                  <i className="fa fa-trash"></i> Destroy
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      );
+      );      
     }
+
+    var footer = (
+      <div>
+        <div className="data-display">Pending ads <span className="badge">42</span></div>
+        <div className="data-display">Replied ads <span className="badge">42</span></div>
+      </div>
+    );
+
+
     
     return (
       <Widget footer={footer}>
-        {this.state.showSettings == true ? settings : info }
-        {this.state.editing == true ? updateOrCancel : null}
+        {body}
+        {settings}
       </Widget>
     );
   }

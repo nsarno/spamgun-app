@@ -1,14 +1,17 @@
 'use strict';
 
+// var baseURL = "https://parrot-api.herokuapp.com";
+var baseURL = "http://localhost:5000";
+
 var ParrotClient = {
   loadSources: function(success, failure) {
-    $.get("https://parrot-api.herokuapp.com/sources")
+    $.get(baseURL + "/sources")
       .done(success)
       .fail(failure);
   },
 
   addSource: function(data, success, failure) {
-    $.post("https://parrot-api.herokuapp.com/sources", data)
+    $.post(baseURL + "/sources", data)
       .done(success)
       .fail(failure);
   },
@@ -16,18 +19,30 @@ var ParrotClient = {
   updateSource: function(id, data, success, failure) {
     $.ajax({
       type: "PUT",
-      url: "https://parrot-api.herokuapp.com/sources/" + id,
+      url: baseURL + "/sources/" + id,
       data: { source: data }
     }).done(success)
       .fail(failure);
   },
 
   removeSource: function(source, success, failure) {
-    console.log(source);
     $.ajax({
       type: "DELETE",
-      url: "https://parrot-api.herokuapp.com/sources/" + source.data.id,
+      url: baseURL + "/sources/" + source.data.id,
     }).done(success)
+      .fail(failure);
+  },
+
+  scrapSource: function(source, success, failure) {
+    var data = { 
+      job: {
+        name: 'scrapper',
+        source_id: source.data.id
+      }
+    };
+
+    $.post(baseURL + "/jobs", data)
+      .done(success)
       .fail(failure);
   }
 }

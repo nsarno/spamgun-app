@@ -18,4 +18,8 @@ module.exports = keymirror({
   REMOVE_SOURCE: null,
   REMOVE_SOURCE_SUCCESS: null,
   REMOVE_SOURCE_FAILURE: null,
+
+  SCRAP_SOURCE: null,
+  SCRAP_SOURCE_SUCCESS: null,
+  SCRAP_SOURCE_FAILURE: null,
 });

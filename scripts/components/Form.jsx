@@ -6,13 +6,13 @@ var Form = React.createClass({
       var component = fieldToComponent(field.type);
       var componentProps = _.merge(field, { 
         handleChange: this.props.handleChange,
-        key: index
+        key: index,
       });
       return component(componentProps);
     }.bind(this));
 
     return (
-      <form className="form-horizontal" onSubmit={this.props.handleSubmit}>
+      <form onSubmit={this.props.handleSubmit}>
         {formFields}
       </form>
     );
@@ -21,18 +21,14 @@ var Form = React.createClass({
 
 var Field = React.createClass({
   render: function() {
-    var label = (
-      <label htmlFor={this.props.id} className="col-sm-2 control-label">
-        {this.props.label}
-      </label>
-    );
+    if (this.props.label) {
+      var label = <label htmlFor={this.props.id}>{this.props.label}</label>
+    }
 
     return (
       <div className="form-group">
-        {this.props.label != undefined ? label : null}
-        <div className="col-sm-8">
-          {this.props.children}
-        </div>
+        {label}
+        {this.props.children}
       </div>
     );
   }

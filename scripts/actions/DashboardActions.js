@@ -24,23 +24,23 @@ var DashboardActions = {
   },
 
   addSource: function(data) {
-    var id = _.uniqueId();
+    var key = _.uniqueId();
 
     Dispatcher.dispatch({
       type: Constants.ADD_SOURCE,
-      data: { id: id, source: data.source }
+      data: { id: key, source: data.source }
     });
     ParrotClient.addSource(data,
       function(source) {
         Dispatcher.dispatch({
           type: Constants.ADD_SOURCE_SUCCESS,
-          data: { id: id, source: source }
+          data: { id: key, source: source }
         });
       }.bind(this),
       function(error) {
         Dispatcher.dispatch({
           type: Constants.ADD_SOURCE_FAILURE,
-          data: { id: id, error: error }
+          data: { id: key, error: error }
         });
       }.bind(this)
     );
@@ -68,7 +68,7 @@ var DashboardActions = {
   },
 
   removeSource: function(source) {
-    var id = source.id;
+    var key = source.id;
 
     Dispatcher.dispatch({
       type: Constants.REMOVE_SOURCE,
@@ -78,16 +78,37 @@ var DashboardActions = {
       function() {
         Dispatcher.dispatch({
           type: Constants.REMOVE_SOURCE_SUCCESS,
-          data: { id: id }
+          data: { id: key }
         });
       }.bind(this),
       function(error) {
         Dispatcher.dispatch({
           type: Constants.ADD_SOURCE_FAILURE,
-          data: { id: id, error: error }
+          data: { id: key, error: error }
         });
       }.bind(this)
     );
+  },
+
+  scrapSource: function(source) {
+    var key = source.id;
+    Dispatcher.dispatch({
+      type: Constants.SCRAP_SOURCE,
+      data: source
+    });
+    ParrotClient.scrapSource(source,
+      function(job) {
+        Dispatcher.dispatch({
+          type: Constants.SCRAP_SOURCE_SUCCESS,
+          data: { id: key, job: job }
+        });
+      },
+      function(error) {
+        Dispatcher.dispatch({
+          type: Constants.SCRAP_SOURCE_FAILURE,
+          data: { id: key, error: error }
+        });
+      });
   }
 };
 

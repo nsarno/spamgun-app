@@ -1,3 +1,9 @@
+$clouds: #ecf0f1;
+$concrete: #95a5a6;
+$silver: #bdc3c7;
+$wet-asphalt: #34495e;
+$alizarin: #ea6153;
+
 .table > tbody > tr > td,
 .table > tbody > tr > th,
 .table > tfoot > tr > td,
@@ -11,6 +17,26 @@ a {
   cursor: pointer;
 }
 
+.btn.active.focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn:active:focus,
+.btn:focus {
+  outline: 0;
+}
+
+.panel > .panel-footer {
+  background-color: transparent;
+  padding: 0;
+}
+
+.panel > .panel-footer .data-display {
+  display: inline-block;
+  border-right: 1px solid $silver;
+  padding: 10px;
+}
+
 .spinner {
   width: 100%;
   text-align: center;
@@ -21,6 +47,38 @@ a {
   i {
     margin-right: 15px;
   }
+}
+
+.settings {
+  margin-top: 25px;
+  border-top: 1px solid $clouds;
+  padding-top: 15px;
+
+  .danger-zone {
+    margin-top: 25px;
+    border-top: 1px solid $clouds;
+    padding-top: 15px;
+  }
+}
+
+.btn-align {
+  padding: 6px 0px;
+  line-height: 1.42857143;
+  vertical-align: middle;
+}
+
+.panel.panel-danger {
+  border-color: $alizarin;
+}
+
+.panel.panel-danger > .panel-heading {
+  background-color: $alizarin;
+  border: 0;
+  color: white;
+}
+
+.panel.panel-danger > .panel-body p {
+  margin-bottom: 0;
 }
 
 .panel > .panel-body,

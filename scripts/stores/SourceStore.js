@@ -88,6 +88,23 @@ var SourceStore = _.assign({}, EventEmitter.prototype, {
     this.sources[payload.id].status = 'error';
     this.sources[payload.id].error = payload.error;
     this.emit(Constants.CHANGE);
+  },
+
+  onScrapSource: function(payload) {
+    this.sources[payload.id].status = 'scrapping';
+    this.emit(Constants.CHANGE);
+  },
+
+  onScrapSourceSuccess: function(payload) {
+    this.sources[payload.id].status = 'ok';
+    this.sources[payload.id].data.jobs.push(payload.job);
+    this.emit(Constants.CHANGE);
+  },
+
+  onScrapSourceError: function(payload) {
+    this.sources[payload.id].status = 'error';
+    this.sources[payload.id].error = payload.error;
+    this.emit(Constants.CHANGE);
   }
 
 });
@@ -140,6 +157,18 @@ Dispatcher.register(function(payload) {
 
     case Constants.REMOVE_SOURCE_ERROR:
       SourceStore.onRemoveSourceError(payload.data);
+      break;
+
+    case Constants.SCRAP_SOURCE:
+      SourceStore.onScrapSource(payload.data);
+      break;
+
+    case Constants.SCRAP_SOURCE_SUCCESS:
+      SourceStore.onScrapSourceSuccess(payload.data);
+      break;
+
+    case Constants.SCRAP_SOURCE_ERROR:
+      SourceStore.onScrapSourceError(payload.data);
       break;
 
     default:
