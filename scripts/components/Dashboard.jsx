@@ -56,17 +56,6 @@ var Dashboard = React.createClass({
     });
   },
 
-  handleRemoveSource: function(key) {
-    DashboardActions.removeSource(this.state.sources[key]);
-  },
-
-  handleRunScrapper: function(key) {
-    DashboardActions.scrapSource(this.state.sources[key]);
-  },
-
-  handleRunSpammer: function(key) {
-  },
-
   handleChange: function(event) {
     var state = { formValues: this.state.formValues };
     state['formValues'][event.target.id] = event.target.value;
@@ -91,14 +80,7 @@ var Dashboard = React.createClass({
     );
     var sources = _.map(this.state.sources, function(source) {
       return (
-        <SourceWidget
-          key={source.id}
-          source={source}
-          handleEditSource={this.handleEditSource}
-          handleRemoveSource={this.handleRemoveSource} 
-          handleRunScrapper={this.handleRunScrapper}
-          handleRunSpammer={this.handleRunSpammer}
-        />
+        <SourceWidget key={source.id} source={source} />
       );
     }.bind(this));
 

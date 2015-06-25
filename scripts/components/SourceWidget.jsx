@@ -36,6 +36,15 @@ var SourceWidget = React.createClass({
     SourceStore.removeChangeListener(this.onSourceChange);
   },
 
+  handleToggleSettings: function() {
+    if (this.state.showSettings == true) {
+      this.handleCancelUpdate();
+    }
+    this.setState({
+      showSettings: !this.state.showSettings
+    });
+  },
+
   onSourceChange: function() {
     this.setState({editing: this.props.source.status == 'ok' ? false : this.state.editing});
   },
@@ -58,13 +67,15 @@ var SourceWidget = React.createClass({
     });
   },
 
-  handleToggleSettings: function() {
-    if (this.state.showSettings == true) {
-      this.handleCancelUpdate();
-    }
-    this.setState({
-      showSettings: !this.state.showSettings
-    });
+  handleRemoveSource: function() {
+    DashboardActions.removeSource(this.props.source);
+  },
+
+  handleRunScrapper: function(key) {
+    DashboardActions.scrapSource(this.props.source);
+  },
+
+  handleRunSpammer: function(key) {
   },
 
   render: function() {
@@ -82,10 +93,10 @@ var SourceWidget = React.createClass({
     });
     var actions = (
       <div className="actions pull-right">
-        <button className="btn btn-default btn-primary" onClick={this.props.handleRunScrapper.bind(null, key)}>
+        <button className="btn btn-default btn-primary" onClick={this.handleRunScrapper.bind(null, key)}>
           <i className="fa fa-binoculars"></i> Run scrapper
         </button>
-        <button className="btn btn-default btn-danger" onClick={this.props.handleRunSpammer.bind(null, key)}>
+        <button className="btn btn-default btn-danger" onClick={this.handleRunSpammer.bind(null, key)}>
           <i className="fa fa-send"></i> Run spammer
         </button>
         <button className={settingsBtnClasses} onClick={this.handleToggleSettings}>
@@ -134,7 +145,7 @@ var SourceWidget = React.createClass({
                 <p className="btn-align pull-left">
                   Once you delete a source, there is no going back. And all the ads history linked to it will be destroyed.
                 </p>
-                <button className="btn btn-default btn-danger pull-right" onClick={this.props.handleRemoveSource.bind(null, key)}>
+                <button className="btn btn-default btn-danger pull-right" onClick={this.handleRemoveSource}>
                   <i className="fa fa-trash"></i> Destroy
                 </button>
               </div>
@@ -144,14 +155,14 @@ var SourceWidget = React.createClass({
       );      
     }
 
+    var pendingCount = this.props.source.data.pending_count;
+    var repliedCount = this.props.source.data.replied_count;
     var footer = (
       <div>
-        <div className="data-display">Pending ads <span className="badge">42</span></div>
-        <div className="data-display">Replied ads <span className="badge">42</span></div>
+        <div className="data-display">Pending ads <span className="badge">{pendingCount}</span></div>
+        <div className="data-display">Replied ads <span className="badge">{repliedCount}</span></div>
       </div>
     );
-
-
     
     return (
       <Widget footer={footer}>
