@@ -1,6 +1,6 @@
 var Dispatcher = require('Dispatcher');
 var Constants = require('Constants');
-var EventEmitter = require('events').EventEmitter;
+var EventEmitter = require('events');
 var DashboardActions = require('DashboardActions');
 
 var SourceStore = _.assign({}, EventEmitter.prototype, {

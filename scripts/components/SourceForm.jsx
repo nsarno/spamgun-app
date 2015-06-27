@@ -20,12 +20,12 @@ var SourceForm = React.createClass({
       {label: 'Name', id: 'form_name', placeholder: 'John Doe', type: 'text', value: this.props.values.form_name},
       {label: 'Email', id: 'form_email', placeholder: 'john.doe@example.net', type: 'email', value: this.props.values.form_email},
       {label: 'Message', id: 'form_body', placeholder: 'Hi, ...', type: 'textarea', value: this.props.values.form_body},
-      {type: 'submit', id: 'submit', name: 'Add'}
     ];
 
     return (
       <Widget heading={heading}>
-        <Form handleSubmit={this.props.handleSubmit} handleChange={this.props.handleChange} fields={fields} />
+        <Form handleChange={this.props.handleChange} fields={fields} />
+        <button className="btn btn-primary" onClick={this.props.handleSubmit}>Add source</button>
       </Widget>
     );
   }

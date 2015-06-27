@@ -6,7 +6,7 @@ var root = [
   path.resolve(path.join(__dirname, 'scripts', 'components')),
   path.resolve(path.join(__dirname, 'scripts', 'stores')),
   path.resolve(path.join(__dirname, 'scripts', 'dispatcher')),
-  path.resolve(path.join(__dirname, 'scripts', 'clients')),
+  path.resolve(path.join(__dirname, 'scripts', 'services')),
   path.resolve(path.join(__dirname, 'scripts', 'actions')),
   path.resolve(path.join(__dirname, 'scripts', 'constants'))
 ];

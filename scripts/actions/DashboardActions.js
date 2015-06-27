@@ -1,5 +1,3 @@
-'use strict';
-
 var Dispatcher = require('Dispatcher');
 var Constants = require('Constants');
 var ParrotClient = require('ParrotClient');

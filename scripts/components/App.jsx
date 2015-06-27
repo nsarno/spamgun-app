@@ -1,30 +1,29 @@
-var React = require('react');
-var Router = require('react-router');
+import React from 'react';
+import Router, {Route, DefaultRoute, RouteHandler} from 'react-router';
 
-var Route = Router.Route;
-var DefaultRoute = Router.DefaultRoute;
-var RouteHandler = Router.RouteHandler;
+import Navbar from 'Navbar';
+import Dashboard from 'Dashboard';
+import Login from 'Login';
 
-var Navbar = require('Navbar');
-var Dashboard = require('Dashboard');
-
-var App = React.createClass({
-  render: function() {
+class App extends React.Component {
+  render() {
     return (
       <div id="app">
         <Navbar />
-        <RouteHandler/>
+        <RouteHandler />
       </div>
     );
   }
-});
+}
 
 var routes = (
   <Route name='app' path='/' handler={App}>
     <DefaultRoute handler={Dashboard}/>
+    <Route name='login' path='login' handler={Login}/>
+    <Route name='dashboard' path='dashboard' handler={Dashboard} />
   </Route>
 );
 
-Router.run(routes, function (Handler) {
-  React.render(<Handler/>, document.body);
+Router.run(routes, (Handler) => {
+  React.render(<Handler />, document.body);
 });

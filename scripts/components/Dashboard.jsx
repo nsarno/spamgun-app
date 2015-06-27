@@ -1,5 +1,6 @@
 var React = require('react');
 
+var LoginStore = require('LoginStore');
 var SourceStore = require('SourceStore');
 var DashboardActions = require('DashboardActions');
 
@@ -19,6 +20,14 @@ var Dashboard = React.createClass({
         form_name: "",
         form_email: "",
         form_body: ""
+      }
+    }
+  },
+
+  statics: {
+    willTransitionTo: function(transition) {
+      if (!LoginStore.isLoggedIn()) {
+        transition.redirect('/login');
       }
     }
   },
@@ -86,6 +95,7 @@ var Dashboard = React.createClass({
 
     return (
       <div id="dashboard" className="container">
+        <DocumentTitle title="Dashboard" />
         {SourceStore.loading ? spinner : sources}
         {this.state.addingSource ? sourceForm : newSourceLink}
       </div>
