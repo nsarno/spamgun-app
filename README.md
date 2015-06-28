@@ -1,2 +1,3 @@
-# SpamGun
-React frontend to use SpamGun web service
+# Spamgun
+
+Spamgun React/Flux frontend
