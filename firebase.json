@@ -1,5 +1,5 @@
 {
-  "firebase": "parrotdash",
+  "firebase": "spamgun",
   "public": ".",
   "ignore": [
     "firebase.json",

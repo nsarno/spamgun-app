@@ -1,12 +1,12 @@
 import Dispatcher from 'Dispatcher';
 import Constants from 'Constants';
-import parrotClient from 'ParrotClient';
+import spamgunService from 'SpamgunService';
 
 class LoginActions {
 
   login(username, password) {
     Dispatcher.dispatch({type: Constants.LOGIN});
-    parrotClient.login(username, password,
+    spamgunService.login(username, password,
       response => {
         Dispatcher.dispatch({
           type: Constants.LOGIN_SUCCESS,

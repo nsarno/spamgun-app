@@ -1,7 +1,7 @@
 import React from 'react';
 import Router from 'react-router';
 import LoginActions from 'LoginActions';
-import LoginStore from 'LoginStore';
+import AuthStore from 'AuthStore';
 
 export default class Navbar extends React.Component {
 
@@ -10,21 +10,21 @@ export default class Navbar extends React.Component {
   }
 
   onAuthChange() {
-    if (!LoginStore.isLoggedIn()) {
+    if (!AuthStore.isLoggedIn()) {
       window.location.replace('/#/login');
     }
   }
 
   componentWillMount() {
-    LoginStore.addChangeListener(this.onAuthChange.bind(this));
+    AuthStore.addChangeListener(this.onAuthChange.bind(this));
   }
 
   componentWillUnmount() {
-    LoginStore.removeChangeListener(this.onAuthChange.bind(this));
+    AuthStore.removeChangeListener(this.onAuthChange.bind(this));
   }
 
   render() {
-    if (LoginStore.isLoggedIn()) {
+    if (AuthStore.isLoggedIn()) {
       var logoutLink = (
         <li>
           <a onClick={this.logout}>

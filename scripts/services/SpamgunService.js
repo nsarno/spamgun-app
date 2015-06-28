@@ -1,4 +1,4 @@
-import LoginStore from 'LoginStore';
+import AuthStore from 'AuthStore';
 
 class BaseService {
 
@@ -12,7 +12,7 @@ class BaseService {
       url: `${this.baseURL}${url}`,
       data: data,
       headers: {
-        Authorization: 'Bearer ' + LoginStore.jwt
+        Authorization: 'Bearer ' + AuthStore.jwt
       }
     }).done(success)
       .fail(failure);
@@ -35,7 +35,7 @@ class BaseService {
   }
 }
 
-class ParrotClient extends BaseService {
+class SpamgunService extends BaseService {
 
   constructor() {
     super();
@@ -78,4 +78,4 @@ class ParrotClient extends BaseService {
   }
 }
 
-export default new ParrotClient();
+export default new SpamgunService();

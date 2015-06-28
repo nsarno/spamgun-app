@@ -3,7 +3,7 @@ import Constants from 'Constants';
 import Dispatcher from 'Dispatcher';
 import jwt_decode from 'jwt-decode';
 
-class LoginStore extends EventEmitter {
+class AuthStore extends EventEmitter {
   constructor() {
     super();
 
@@ -88,4 +88,4 @@ class LoginStore extends EventEmitter {
   }
 }
 
-export default new LoginStore();
+export default new AuthStore();

@@ -1,6 +1,6 @@
 var React = require('react');
 
-var LoginStore = require('LoginStore');
+var AuthStore = require('AuthStore');
 var SourceStore = require('SourceStore');
 var DashboardActions = require('DashboardActions');
 
@@ -29,7 +29,7 @@ var Dashboard = React.createClass({
 
   statics: {
     willTransitionTo: function(transition) {
-      if (!LoginStore.isLoggedIn()) {
+      if (!AuthStore.isLoggedIn()) {
         transition.redirect('/login');
       }
     }

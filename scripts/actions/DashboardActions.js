@@ -1,11 +1,11 @@
 var Dispatcher = require('Dispatcher');
 var Constants = require('Constants');
-var ParrotClient = require('ParrotClient');
+var spamgunService = require('SpamgunService');
 
 var DashboardActions = {
   loadSources: function() {
     Dispatcher.dispatch({ type: Constants.LOAD_SOURCES });
-    ParrotClient.loadSources(
+    spamgunService.loadSources(
       function(sources) {
         Dispatcher.dispatch({
           type: Constants.LOAD_SOURCES_SUCCESS,
@@ -26,7 +26,7 @@ var DashboardActions = {
       type: Constants.REFRESH_SOURCE,
       data: { key: key }
     });
-    ParrotClient.refreshSource(id,
+    spamgunService.refreshSource(id,
       function(source) {
         if (source.processing) {
           setTimeout(function() {
@@ -54,7 +54,7 @@ var DashboardActions = {
       type: Constants.ADD_SOURCE,
       data: { key: key, source: data.source }
     });
-    ParrotClient.addSource(data,
+    spamgunService.addSource(data,
       function(source) {
         Dispatcher.dispatch({
           type: Constants.ADD_SOURCE_SUCCESS,
@@ -75,7 +75,7 @@ var DashboardActions = {
       type: Constants.UPDATE_SOURCE,
       data: { key: key, source: data }
     });
-    ParrotClient.updateSource(id, data,
+    spamgunService.updateSource(id, data,
       function(source) {
         Dispatcher.dispatch({
           type: Constants.UPDATE_SOURCE_SUCCESS,
@@ -98,7 +98,7 @@ var DashboardActions = {
       type: Constants.REMOVE_SOURCE,
       data: source
     });
-    ParrotClient.removeSource(source,
+    spamgunService.removeSource(source,
       function() {
         Dispatcher.dispatch({
           type: Constants.REMOVE_SOURCE_SUCCESS,
@@ -120,7 +120,7 @@ var DashboardActions = {
       type: Constants.SCRAP_SOURCE,
       data: source
     });
-    ParrotClient.scrapSource(source,
+    spamgunService.scrapSource(source,
       function(job) {
         Dispatcher.dispatch({
           type: Constants.SCRAP_SOURCE_SUCCESS,
@@ -142,7 +142,7 @@ var DashboardActions = {
       type: Constants.SPAM_SOURCE,
       data: source
     });
-    ParrotClient.spamSource(source,
+    spamgunService.spamSource(source,
       function(job) {
         Dispatcher.dispatch({
           type: Constants.SPAM_SOURCE_SUCCESS,

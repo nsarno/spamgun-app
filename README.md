@@ -1,2 +1,2 @@
-# parrot-app
-React frontend to use parrot web service
+# SpamGun
+React frontend to use SpamGun web service

@@ -1,14 +1,14 @@
-import React from "react";
-import Router from "react-router";
-import Form from "Form";
-import LoginActions from "LoginActions";
-import LoginStore from "LoginStore";
+import React from 'react';
+import Router from 'react-router';
+import Form from 'Form';
+import LoginActions from 'LoginActions';
+import AuthStore from 'AuthStore';
 import DocumentTitle from 'react-document-title';
 
 export default class Login extends React.Component {
 
   static willTransitionTo(transition) {
-    if (LoginStore.isLoggedIn()) {
+    if (AuthStore.isLoggedIn()) {
       transition.redirect('/');
     }
   }
@@ -22,21 +22,21 @@ export default class Login extends React.Component {
   }
 
   onAuthChange() {
-    if (LoginStore.isLoggedIn()) {
+    if (AuthStore.isLoggedIn()) {
       window.location.replace('/#/dashboard');
     }
   }
 
   componentWillMount() {
-    LoginStore.addChangeListener(this.onAuthChange.bind(this));
+    AuthStore.addChangeListener(this.onAuthChange.bind(this));
   }
 
   componentWillUnmount() {
-    LoginStore.removeChangeListener(this.onAuthChange.bind(this));
+    AuthStore.removeChangeListener(this.onAuthChange.bind(this));
   }
 
   handleLogin() {
-    LoginActions.login(this.state.username, this.state.password);
+    AuthStore.login(this.state.username, this.state.password);
   }
 
   handleChange(event) {
