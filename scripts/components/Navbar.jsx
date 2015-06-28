@@ -16,7 +16,6 @@ export default class Navbar extends React.Component {
   }
 
   componentWillMount() {
-    console.log(window.location.pathname);
     LoginStore.addChangeListener(this.onAuthChange.bind(this));
   }
 

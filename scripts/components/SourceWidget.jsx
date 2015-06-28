@@ -14,7 +14,10 @@ var SourceWidget = React.createClass({
       form_url: source.form_url,
       form_name: source.form_name,
       form_email: source.form_email,
-      form_body: source.form_body
+      form_body: source.form_body,
+      page_param: source.page_param,
+      page_start: source.page_start,
+      page_max: source.page_max
     });
   },
 
@@ -23,7 +26,6 @@ var SourceWidget = React.createClass({
 
     return ({
       editing: false,
-      refreshAuto: false,
       showSettings: false,
       formValues: this.initialFormValues()
     });
@@ -48,7 +50,7 @@ var SourceWidget = React.createClass({
 
   onSourceChange: function() {
     this.setState({
-      editing: this.props.source.status == 'ok' ? false : this.state.editing,
+      editing: this.props.source.status == 'ok' ? false : this.state.editing
     });
   },
 
@@ -97,6 +99,9 @@ var SourceWidget = React.createClass({
       {label: 'Name', id: 'form_name', type: 'text', value: this.state.formValues.form_name},
       {label: 'Email', id: 'form_email', type: 'email', value: this.state.formValues.form_email},
       {label: 'Message', id: 'form_body', type: 'textarea', value: this.state.formValues.form_body},
+      {label: 'Page param', id: 'page_param', type: 'input', value: this.state.formValues.page_param},
+      {label: 'Page start', id: 'page_start', type: 'input', value: this.state.formValues.page_start},
+      {label: 'Page max', id: 'page_max', type: 'input', value: this.state.formValues.page_max}
     ];
 
     if (this.props.source.data.scrapping) {

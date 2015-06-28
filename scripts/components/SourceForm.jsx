@@ -20,6 +20,9 @@ var SourceForm = React.createClass({
       {label: 'Name', id: 'form_name', placeholder: 'John Doe', type: 'text', value: this.props.values.form_name},
       {label: 'Email', id: 'form_email', placeholder: 'john.doe@example.net', type: 'email', value: this.props.values.form_email},
       {label: 'Message', id: 'form_body', placeholder: 'Hi, ...', type: 'textarea', value: this.props.values.form_body},
+      {label: 'Page param', id: 'page_param', type: 'input', value: this.props.values.page_param},
+      {label: 'Page start', id: 'page_start', type: 'input', value: this.props.values.page_start},
+      {label: 'Page max', id: 'page_max', type: 'input', value: this.props.values.page_max}
     ];
 
     return (

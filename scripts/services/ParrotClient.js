@@ -39,7 +39,7 @@ class ParrotClient extends BaseService {
 
   constructor() {
     super();
-    this.baseURL = "https://parrot-api.herokuapp.com";
+    // this.baseURL = "https://parrot-api.herokuapp.com";
   }
 
   login(username, password, success, failure) {

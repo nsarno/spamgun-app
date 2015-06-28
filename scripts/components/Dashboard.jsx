@@ -19,7 +19,10 @@ var Dashboard = React.createClass({
         form_url: "http://www2.leboncoin.fr/ar/form/0",
         form_name: "",
         form_email: "",
-        form_body: ""
+        form_body: "",
+        page_param: "o",
+        page_start: "1",
+        page_max: "1"
       }
     }
   },

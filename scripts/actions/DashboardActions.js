@@ -73,10 +73,10 @@ var DashboardActions = {
   updateSource: function(key, id, data) {
     Dispatcher.dispatch({
       type: Constants.UPDATE_SOURCE,
-      data: { key: key }
+      data: { key: key, source: data }
     });
     ParrotClient.updateSource(id, data,
-      function() {
+      function(source) {
         Dispatcher.dispatch({
           type: Constants.UPDATE_SOURCE_SUCCESS,
           data: { key: key }

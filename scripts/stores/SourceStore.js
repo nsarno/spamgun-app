@@ -83,6 +83,7 @@ var SourceStore = _.assign({}, EventEmitter.prototype, {
 
   onUpdateSource: function(payload) {
     this.sources[payload.key].status = 'updating';
+    this.sources[payload.key].data = _.merge(this.sources[payload.key].data, payload.source);
     this.emit(Constants.CHANGE);
   },
 
