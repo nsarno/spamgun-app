@@ -36,7 +36,7 @@ export default class Login extends React.Component {
   }
 
   handleLogin() {
-    AuthStore.login(this.state.username, this.state.password);
+    LoginActions.login(this.state.username, this.state.password);
   }
 
   handleChange(event) {
