@@ -1,14 +1,14 @@
 var path = require('path');
 
-var entry_path = path.resolve(path.join(__dirname, 'scripts', 'components', 'App.jsx'));
+var entry_path = path.resolve(path.join(__dirname, 'src', 'scripts', 'components', 'App.jsx'));
 var dist_path = path.resolve('dist');
 var root = [
-  path.resolve(path.join(__dirname, 'scripts', 'components')),
-  path.resolve(path.join(__dirname, 'scripts', 'stores')),
-  path.resolve(path.join(__dirname, 'scripts', 'dispatcher')),
-  path.resolve(path.join(__dirname, 'scripts', 'services')),
-  path.resolve(path.join(__dirname, 'scripts', 'actions')),
-  path.resolve(path.join(__dirname, 'scripts', 'constants'))
+  path.resolve(path.join(__dirname, 'src', 'scripts', 'components')),
+  path.resolve(path.join(__dirname, 'src', 'scripts', 'stores')),
+  path.resolve(path.join(__dirname, 'src', 'scripts', 'dispatcher')),
+  path.resolve(path.join(__dirname, 'src', 'scripts', 'services')),
+  path.resolve(path.join(__dirname, 'src', 'scripts', 'actions')),
+  path.resolve(path.join(__dirname, 'src', 'scripts', 'constants'))
 ];
 
 var config = {

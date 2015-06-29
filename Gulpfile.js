@@ -9,8 +9,9 @@ var sass = require('gulp-sass');
 var concat = require('gulp-concat');
 
 var path = {
-  scripts: ['scripts/**/*.js', 'scripts/**/*.jsx'],
-  styles: ['styles/**/*.scss'],
+  scripts: ['src/scripts/**/*.js', 'src/scripts/**/*.jsx'],
+  styles: ['src/styles/**/*.scss'],
+  entry: ['src/index.html'],
   dist: 'dist',
   webpackConfig: './webpack.config.js'
 }
@@ -37,7 +38,10 @@ gulp.task('styles', function() {
     .pipe(gulp.dest(path.dist));
 });
 
-gulp.task('build', ['scripts', 'styles']);
+gulp.task('build', ['scripts', 'styles'], function() {
+  return gulp.src(path.entry)
+    .pipe(gulp.dest(path.dist));
+});
 
 gulp.task('clean', function(cb) {
   del(['dist/**/*'], cb);
@@ -50,7 +54,7 @@ gulp.task('serve', ['build'], function() {
     browserSync.init({
         notify: false,
         server: {
-            baseDir: "./"
+            baseDir: "./dist"
         }
     });
 
