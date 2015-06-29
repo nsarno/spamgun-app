@@ -1,9 +1,9 @@
 import React from 'react';
 import Router from 'react-router';
+import DocumentTitle from 'react-document-title';
 import Form from 'Form';
 import LoginActions from 'LoginActions';
 import AuthStore from 'AuthStore';
-import DocumentTitle from 'react-document-title';
 
 export default class Login extends React.Component {
 
@@ -61,5 +61,4 @@ export default class Login extends React.Component {
       </div>
     );
   }
-
 }

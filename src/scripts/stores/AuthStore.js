@@ -1,7 +1,8 @@
 import EventEmitter from 'events';
+import jwt_decode from 'jwt-decode';
+
 import Constants from 'Constants';
 import Dispatcher from 'Dispatcher';
-import jwt_decode from 'jwt-decode';
 
 class AuthStore extends EventEmitter {
   constructor() {
