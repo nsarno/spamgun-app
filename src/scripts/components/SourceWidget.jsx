@@ -10,6 +10,7 @@ var SourceWidget = React.createClass({
   initialFormValues: function() {
     var source = this.props.source.data;
     return ({
+      title: source.title,
       list_url: source.list_url,
       form_url: source.form_url,
       form_name: source.form_name,
@@ -17,7 +18,8 @@ var SourceWidget = React.createClass({
       form_body: source.form_body,
       page_param: source.page_param,
       page_start: source.page_start,
-      page_max: source.page_max
+      page_max: source.page_max,
+      spam_max: source.spam_max
     });
   },
 
@@ -95,13 +97,16 @@ var SourceWidget = React.createClass({
 
     // Edit source form fields
     var fields = [
+      {label: 'Title', id: 'title', type: 'text', value: this.state.formValues.title},
+      {label: 'List URL', id: 'list_url', type: 'url', disabled: true, value: this.state.formValues.list_url},
       {label: 'Form URL', id: 'form_url', type: 'url', value: this.state.formValues.form_url},
       {label: 'Name', id: 'form_name', type: 'text', value: this.state.formValues.form_name},
       {label: 'Email', id: 'form_email', type: 'email', value: this.state.formValues.form_email},
       {label: 'Message', id: 'form_body', type: 'textarea', value: this.state.formValues.form_body},
       {label: 'Page param', id: 'page_param', type: 'input', value: this.state.formValues.page_param},
       {label: 'Page start', id: 'page_start', type: 'input', value: this.state.formValues.page_start},
-      {label: 'Page max', id: 'page_max', type: 'input', value: this.state.formValues.page_max}
+      {label: 'Page max', id: 'page_max', type: 'input', value: this.state.formValues.page_max},
+      {label: 'Spam max', id: 'spam_max', type: 'input', value: this.state.formValues.spam_max}
     ];
 
     if (this.props.source.data.scrapping) {
@@ -185,7 +190,7 @@ var SourceWidget = React.createClass({
       <div className="container-fluid">
         <div className="row">
           <a className="btn" href={this.props.source.data.list_url}>
-            <i className="fa fa-terminal"></i> {this.props.source.data.list_url}
+            <i className="fa fa-terminal"></i> {this.props.source.data.title}
           </a>
           {actions}
         </div>

@@ -15,6 +15,7 @@ var SourceForm = React.createClass({
       </div>
     );
     var fields = [
+      {label: 'Title', id: 'title', placeholder: 'Title', type: 'text', value: this.props.values.title},
       {label: 'List URL', id: 'list_url', placeholder: placeholderListURL, type: 'url', value: this.props.values.list_url},
       {label: 'Form URL', id: 'form_url', placeholder: placeholderFormURL, type: 'url', value: this.props.values.form_url},
       {label: 'Name', id: 'form_name', placeholder: 'John Doe', type: 'text', value: this.props.values.form_name},
@@ -22,7 +23,8 @@ var SourceForm = React.createClass({
       {label: 'Message', id: 'form_body', placeholder: 'Hi, ...', type: 'textarea', value: this.props.values.form_body},
       {label: 'Page param', id: 'page_param', type: 'input', value: this.props.values.page_param},
       {label: 'Page start', id: 'page_start', type: 'input', value: this.props.values.page_start},
-      {label: 'Page max', id: 'page_max', type: 'input', value: this.props.values.page_max}
+      {label: 'Page max', id: 'page_max', type: 'input', value: this.props.values.page_max},
+      {label: 'Spam max', id: 'spam_max', type: 'input', value: this.props.values.spam_max}
     ];
 
     return (

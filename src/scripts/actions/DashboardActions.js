@@ -31,7 +31,7 @@ var DashboardActions = {
         if (source.processing) {
           setTimeout(function() {
             this.refreshSource(key, id);
-          }.bind(this), 5 * 1000);
+          }.bind(this), 2 * 1000);
         };
         Dispatcher.dispatch({
           type: Constants.REFRESH_SOURCE_SUCCESS,

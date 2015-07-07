@@ -13,9 +13,9 @@
   "author": "Arnaud Mesureur",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nsarno/parrot-app/issues"
+    "url": "https://github.com/nsarno/spamgun-app/issues"
   },
-  "homepage": "https://github.com/nsarno/parrot-app",
+  "homepage": "https://github.com/nsarno/spamgun-app",
   "dependencies": {
     "classnames": "^2.1.2",
     "flux": "^2.0.3",
@@ -34,7 +34,6 @@
     "del": "^1.2.0",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.5.2",
-    "gulp-plumber": "^1.0.1",
     "gulp-sass": "^2.0.1",
     "gulp-sourcemaps": "^1.5.2",
     "node-libs-browser": "^0.5.2",

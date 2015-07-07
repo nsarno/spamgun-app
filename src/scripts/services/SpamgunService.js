@@ -39,7 +39,7 @@ class SpamgunService extends BaseService {
 
   constructor() {
     super();
-    this.baseURL = "https://spamgun-api.herokuapp.com";
+    // this.baseURL = "https://spamgun-api.herokuapp.com";
   }
 
   login(username, password, success, failure) {

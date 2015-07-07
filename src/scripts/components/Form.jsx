@@ -43,6 +43,7 @@ Form.Input = React.createClass({
           id={this.props.id}
           type={this.props.type}
           placeholder={this.props.placeholder}
+          disabled={this.props.disabled}
           onChange={this.props.handleChange}
           value={this.props.value}
         />
