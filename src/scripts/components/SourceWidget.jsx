@@ -93,6 +93,8 @@ var SourceWidget = React.createClass({
   render: function() {
     var key = this.props.source.key;
     var pendingCount = this.props.source.data.pending_count;
+    var spamCount = this.props.source.data.spam_max ?
+      this.props.source.data.spam_max : this.props.source.data.pending_count;
     var repliedCount = this.props.source.data.replied_count;
 
     // Edit source form fields
@@ -144,7 +146,7 @@ var SourceWidget = React.createClass({
     } else {
       var spamButton = (
         <button className="btn btn-default btn-danger" onClick={this.handleRunSpammer}>
-          <i className="fa fa-send"></i> Run Spammer <span className="badge">{pendingCount}</span>
+          <i className="fa fa-send"></i> Run Spammer <span className="badge">{spamCount}</span>
         </button>
       );
     }
