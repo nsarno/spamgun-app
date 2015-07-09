@@ -1,6 +1,6 @@
 import React from 'react';
 import Router from 'react-router';
-import LoginActions from 'LoginActions';
+import loginActions from 'LoginActions';
 import AuthStore from 'AuthStore';
 
 export default class Navbar extends React.Component {
@@ -24,16 +24,18 @@ export default class Navbar extends React.Component {
   }
 
   render() {
-    if (AuthStore.isLoggedIn()) {
-      var logoutLink = (
-        <li>
-          <a onClick={this.logout}>
-            <i className="fa fa-sign-out"></i>
-          </a>
-        </li>
-      );
-    }
-
+    var logoutLink = () => {
+      if (AuthStore.isLoggedIn()) {
+        return (
+          <li>
+            <a onClick={this.logout}>
+              <i className="fa fa-sign-out"></i>
+            </a>
+          </li>
+        );
+      }
+    };
+    
     return (
       <div className="navbar navbar-default">
         <div className="container-fluid">
@@ -54,7 +56,7 @@ export default class Navbar extends React.Component {
 
           <div className="collapse navbar-collapse" id="navbar-collapse">
             <ul className="nav navbar-nav navbar-right">
-              {logoutLink}
+              {logoutLink()}
             </ul>
           </div>
 

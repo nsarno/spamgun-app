@@ -70,7 +70,7 @@ var Dashboard = React.createClass({
 
   handleChange: function(event) {
     var state = { formValues: this.state.formValues };
-    state['formValues'][event.target.id] = event.target.value;
+    state.formValues[event.target.id] = event.target.value;
     this.setState(state);
   },
 

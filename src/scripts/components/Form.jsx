@@ -21,13 +21,15 @@ var Form = React.createClass({
 
 var Field = React.createClass({
   render: function() {
-    if (this.props.label) {
-      var label = <label htmlFor={this.props.id}>{this.props.label}</label>
-    }
+    var label = function() {
+      if (this.props.label) {
+        var label = <label htmlFor={this.props.id}>{this.props.label}</label>;
+      }
+    }.bind(this);
 
     return (
       <div className="form-group">
-        {label}
+        {label()}
         {this.props.children}
       </div>
     );
@@ -91,7 +93,7 @@ function fieldToComponent(fieldType) {
       component = Form.Input;
   }
   return (React.createFactory(component));
-};
+}
 
 Form.fieldToComponent = fieldToComponent;
 

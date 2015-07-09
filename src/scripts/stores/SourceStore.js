@@ -103,7 +103,7 @@ var SourceStore = _.assign({}, EventEmitter.prototype, {
   },
 
   onRemoveSourceSuccess: function(payload) {
-    delete this.sources[payload.key]
+    delete this.sources[payload.key];
     this.emit(Constants.CHANGE);
   },
 

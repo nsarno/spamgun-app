@@ -42,7 +42,7 @@ var SourceWidget = React.createClass({
   },
 
   handleToggleSettings: function() {
-    if (this.state.showSettings == true) {
+    if (this.state.showSettings === true) {
       this.handleCancelUpdate();
     }
     this.setState({
@@ -62,7 +62,7 @@ var SourceWidget = React.createClass({
 
   handleChange: function(event) {
     var state = { formValues: this.state.formValues };
-    state['formValues'][event.target.id] = event.target.value;
+    state.formValues[event.target.id] = event.target.value;
     state.editing = true;
     this.setState(state);
   },
@@ -111,80 +111,85 @@ var SourceWidget = React.createClass({
       {label: 'Spam max', id: 'spam_max', type: 'input', value: this.state.formValues.spam_max}
     ];
 
-    if (this.props.source.data.scrapping) {
-      var scrapButton = (
-        <button className="btn btn-default btn-primary disabled">
-          <i className="fa fa-circle-o-notch fa-spin"></i> Scrapping...
-        </button>
-      );      
-    } else if (this.props.source.data.scrap_pending) {
-      var scrapButton = (
-        <button className="btn btn-default btn-primary disabled">
-          <i className="fa fa-binoculars"></i> Pending...
-        </button>
-      );
-    } else {
-      var scrapButton = (
-        <button className="btn btn-default btn-primary" onClick={this.handleRunScrapper}>
-          <i className="fa fa-binoculars"></i> Run Scrapper
-        </button>
-      );
-    }
+    var scrapButton = function() {
+      if (this.props.source.data.scrapping) {
+        return (
+          <button className="btn btn-default btn-primary disabled">
+            <i className="fa fa-circle-o-notch fa-spin"></i> Scrapping...
+          </button>
+        );
+      } else if (this.props.source.data.scrap_pending) {
+        return (
+          <button className="btn btn-default btn-primary disabled">
+            <i className="fa fa-binoculars"></i> Pending...
+          </button>
+        );
+      } else {
+        return (
+          <button className="btn btn-default btn-primary" onClick={this.handleRunScrapper}>
+            <i className="fa fa-binoculars"></i> Run Scrapper
+          </button>
+        );
+      }
+    }.bind(this);
 
-    if (this.props.source.data.spamming) {
-      var spamButton = (
-        <button className="btn btn-default btn-danger disabled">
-          <i className="fa fa-circle-o-notch fa-spin"></i> Spamming...
-        </button>
-      );    
-    } else if (this.props.source.data.spam_pending) {
-      var spamButton = (
-        <button className="btn btn-default btn-danger disabled">
-          <i className="fa fa-send"></i> Pending...
-        </button>
-      );    
-    } else {
-      var spamButton = (
-        <button className="btn btn-default btn-danger" onClick={this.handleRunSpammer}>
-          <i className="fa fa-send"></i> Run Spammer <span className="badge">{spamCount}</span>
-        </button>
-      );
-    }
+    var spamButton = function() {
+      if (this.props.source.data.spamming) {
+        return (
+          <button className="btn btn-default btn-danger disabled">
+            <i className="fa fa-circle-o-notch fa-spin"></i> Spamming...
+          </button>
+        );
+      } else if (this.props.source.data.spam_pending) {
+        return (
+          <button className="btn btn-default btn-danger disabled">
+            <i className="fa fa-send"></i> Pending...
+          </button>
+        );
+      } else {
+        return (
+          <button className="btn btn-default btn-danger" onClick={this.handleRunSpammer}>
+            <i className="fa fa-send"></i> Run Spammer <span className="badge">{spamCount}</span>
+          </button>
+        );
+      }
+    }.bind(this);
 
-    if (this.state.showSettings) {
-      var settingsButton = (
+    var settingsButton = function() {
+      if (this.state.showSettings) {
         <button className="btn btn-default" onClick={this.handleToggleSettings}>
           <i className="fa fa-cog fa-spin"></i>
-        </button>
-      );
-    } else {
-      var settingsButton = (
+        </button>;
+      } else {
         <button className="btn btn-default" onClick={this.handleToggleSettings}>
           <i className="fa fa-cog"></i>
-        </button>
-      );
-    }
+        </button>;
+      }
+    }.bind(this);
+    
 
-    if (this.props.source.data.processing) {
-      var refreshButton = (
-        <button className="btn btn-default" onClick={this.handleRefresh}>
-          <i className="fa fa-refresh fa-spin"></i>
-        </button>
-      );
-    } else {
-      var refreshButton = (
-        <button className="btn btn-default" onClick={this.handleRefresh}>
-          <i className="fa fa-refresh"></i>
-        </button>
-      );
-    }
+    var refreshButton = function() {
+      if (this.props.source.data.processing) {
+        return (
+          <button className="btn btn-default" onClick={this.handleRefresh}>
+            <i className="fa fa-refresh fa-spin"></i>
+          </button>
+        );
+      } else {
+        return (
+          <button className="btn btn-default" onClick={this.handleRefresh}>
+            <i className="fa fa-refresh"></i>
+          </button>
+        );
+      }
+    }.bind(this);
 
     var actions = (
       <div className="actions pull-right">
-        {scrapButton}
-        {spamButton}
-        {settingsButton}
-        {refreshButton}
+        {scrapButton()}
+        {spamButton()}
+        {settingsButton()}
+        {refreshButton()}
       </div>
     );
 
@@ -199,44 +204,49 @@ var SourceWidget = React.createClass({
       </div>
     );
 
-    if (this.state.showSettings == true) {
-      if (this.state.editing == true) {
-        var updateOrCancel = (
-          <div>
-            <button className="btn btn-default btn-primary" onClick={this.handleUpdate}>
-              {this.props.source.status == 'updating' ? <i className="fa fa-spinner fa-pulse"></i> : 'Update'}
-            </button>
-            <button className="btn btn-default btn-default" onClick={this.handleCancelUpdate}>Cancel</button>
-          </div>
-        );
-      }
-      var settings = (
-        <div className="settings">
-          <Form
-            handleSubmit={this.handleUpdate}
-            handleChange={this.handleChange}
-            fields={fields}
-          />
-          {updateOrCancel}
-          <div className="danger-zone">
-            <div className="panel panel-danger">
-              <div className="panel-heading">
-                Danger Zone
-              </div>
-              <div className="panel-body">
-                <h4>Delete this source</h4>
-                <p className="btn-align pull-left">
-                  Once you delete a source, there is no going back. And all the ads history linked to it will be destroyed.
-                </p>
-                <button className="btn btn-default btn-danger pull-right" onClick={this.handleRemoveSource}>
-                  <i className="fa fa-trash"></i> Destroy
-                </button>
+    var settings = function() {
+      var updateOrCancel = function() {
+        if (this.state.editing === true) {
+          return (
+            <div>
+              <button className="btn btn-default btn-primary" onClick={this.handleUpdate}>
+                {this.props.source.status == 'updating' ? <i className="fa fa-spinner fa-pulse"></i> : 'Update'}
+              </button>
+              <button className="btn btn-default btn-default" onClick={this.handleCancelUpdate}>Cancel</button>
+            </div>
+          );
+        }
+      }.bind(this);
+
+      if (this.state.showSettings === true) {
+        return (
+          <div className="settings">
+            <Form
+              handleSubmit={this.handleUpdate}
+              handleChange={this.handleChange}
+              fields={fields}
+            />
+            {updateOrCancel()}
+            <div className="danger-zone">
+              <div className="panel panel-danger">
+                <div className="panel-heading">
+                  Danger Zone
+                </div>
+                <div className="panel-body">
+                  <h4>Delete this source</h4>
+                  <p className="btn-align pull-left">
+                    Once you delete a source, there is no going back. And all the ads history linked to it will be destroyed.
+                  </p>
+                  <button className="btn btn-default btn-danger pull-right" onClick={this.handleRemoveSource}>
+                    <i className="fa fa-trash"></i> Destroy
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      );      
-    }
+        );
+      }
+    }.bind(this);
 
     var footer = (
       <div>
@@ -252,7 +262,7 @@ var SourceWidget = React.createClass({
     return (
       <Widget footer={footer}>
         {body}
-        {settings}
+        {settings()}
       </Widget>
     );
   }

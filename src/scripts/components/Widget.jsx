@@ -15,11 +15,11 @@ var Widget = React.createClass({
     );
     return (
       <div className="panel panel-default">
-        {this.props.heading != undefined ? heading : null}
+        {this.props.heading !== undefined ? heading : null}
         <div className="panel-body">
           {this.props.children}
         </div>
-        {this.props.footer != undefined ? footer : null}
+        {this.props.footer !== undefined ? footer : null}
       </div>
     );
   }

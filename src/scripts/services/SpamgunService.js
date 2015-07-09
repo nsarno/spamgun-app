@@ -3,7 +3,7 @@ import AuthStore from 'AuthStore';
 class BaseService {
 
   constructor() {
-    this.baseURL = 'http://localhost:5000'
+    this.baseURL = 'http://localhost:5000';
   }
 
   ajax(method, url, data, success, failure) {
@@ -39,7 +39,9 @@ class SpamgunService extends BaseService {
 
   constructor() {
     super();
+    // @if ENV='production'
     this.baseURL = "https://spamgun-api.herokuapp.com";
+    // @endif
   }
 
   login(username, password, success, failure) {

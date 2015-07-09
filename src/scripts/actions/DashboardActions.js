@@ -32,7 +32,7 @@ var DashboardActions = {
           setTimeout(function() {
             this.refreshSource(key, id);
           }.bind(this), 2 * 1000);
-        };
+        }
         Dispatcher.dispatch({
           type: Constants.REFRESH_SOURCE_SUCCESS,
           data: { key: key, source: source }

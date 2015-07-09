@@ -40,7 +40,7 @@ export default class Login extends React.Component {
   }
 
   handleChange(event) {
-    var state = {}
+    var state = {};
     state[event.target.id] = event.target.value;
     this.setState(state);
   }

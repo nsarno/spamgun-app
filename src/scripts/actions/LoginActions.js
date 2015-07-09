@@ -27,4 +27,4 @@ class LoginActions {
   }
 }
 
-export default new LoginActions;
+export default new LoginActions();
