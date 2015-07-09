@@ -24,7 +24,7 @@ var Dashboard = React.createClass({
         page_start: "1",
         page_max: "1"
       }
-    }
+    };
   },
 
   statics: {
@@ -41,7 +41,7 @@ var Dashboard = React.createClass({
     DashboardActions.loadSources();
   },
 
-  componentWillUnmount: function(){
+  componentWillUnmount: function() {
 
     SourceStore.removeChangeListener(this.onSourceChange);
   },
