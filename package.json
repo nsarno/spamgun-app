@@ -4,7 +4,7 @@
   "description": "React frontend to use SpamGun web service",
   "main": "Gulpfile.js",
   "scripts": {
-    "test": "karma start"
+    "test": "./node_modules/karma/bin/karma start"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
     "jquery": "^2.1.4",
     "jwt-decode": "^1.1.1",
     "keymirror": "^0.1.1",
+    "lodash": "^3.10.0",
     "react": "^0.13.3",
     "react-document-title": "^1.0.2",
     "react-router": "^0.13.3",
@@ -51,7 +52,6 @@
     "karma-mocha": "^0.2.0",
     "karma-sourcemap-loader": "^0.3.5",
     "karma-webpack": "^1.5.1",
-    "lodash": "^3.10.0",
     "mocha": "^2.2.5",
     "node-libs-browser": "^0.5.2",
     "webpack": "^1.9.10",
