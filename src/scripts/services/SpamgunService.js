@@ -1,4 +1,5 @@
 import AuthStore from 'AuthStore';
+import $ from 'jquery';
 
 class BaseService {
 

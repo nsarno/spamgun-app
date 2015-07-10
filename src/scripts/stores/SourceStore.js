@@ -2,6 +2,7 @@ var Dispatcher = require('Dispatcher');
 var Constants = require('Constants');
 var EventEmitter = require('events');
 var DashboardActions = require('DashboardActions');
+var _ = require('lodash');
 
 var SourceStore = _.assign({}, EventEmitter.prototype, {
   loading: false,
