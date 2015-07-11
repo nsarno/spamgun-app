@@ -18,6 +18,7 @@ var preprocess = require('gulp-preprocess');
 
 var path = {
   scripts: ['src/scripts/**/*.js', 'src/scripts/**/*.jsx'],
+  tests: ['src/scripts/**/*-test.js'],
   styles: ['src/styles/**/*.scss'],
   entry: ['src/index.html'],
   dist: 'dist',
@@ -38,8 +39,7 @@ gulp.task('html', function() {
 });
 
 gulp.task('scripts', ['lint'], function() {
-  return gulp.src(path.scripts)
-    .pipe(sourcemaps.init())
+  return sourcemaps.init()
       .pipe(webpack(require(path.webpackConfig)))
       .pipe(gulpif(argv.production, uglify()))
     .pipe(sourcemaps.write('.'))
