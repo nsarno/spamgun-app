@@ -4,9 +4,9 @@ import spamgunService from 'SpamgunService';
 
 class LoginActions {
 
-  login(username, password) {
+  login(email, password) {
     Dispatcher.dispatch({type: Constants.LOGIN});
-    spamgunService.login(username, password,
+    spamgunService.login(email, password,
       response => {
         Dispatcher.dispatch({
           type: Constants.LOGIN_SUCCESS,

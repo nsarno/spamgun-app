@@ -6,7 +6,7 @@ import AuthStore from 'AuthStore';
 export default class Navbar extends React.Component {
 
   logout() {
-    LoginActions.logout();
+    loginActions.logout();
   }
 
   onAuthChange() {

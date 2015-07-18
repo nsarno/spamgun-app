@@ -16,7 +16,7 @@ export default class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      email: '',
       password: ''
     };
   }
@@ -36,7 +36,7 @@ export default class Login extends React.Component {
   }
 
   handleLogin() {
-    LoginActions.login(this.state.username, this.state.password);
+    LoginActions.login(this.state.email, this.state.password);
   }
 
   handleChange(event) {
@@ -47,7 +47,7 @@ export default class Login extends React.Component {
 
   render() {
     var fields = [
-      {id: 'username', type: 'text', placeholder: 'Username', value: this.state.username},
+      {id: 'email', type: 'email', placeholder: 'james@example.net', value: this.state.email},
       {id: 'password', type: 'password', placeholder: 'Password', value: this.state.password},
     ];
 
