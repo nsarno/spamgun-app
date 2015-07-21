@@ -157,13 +157,17 @@ var SourceWidget = React.createClass({
 
     var settingsButton = function() {
       if (this.state.showSettings) {
-        <button className="btn btn-default" onClick={this.handleToggleSettings}>
-          <i className="fa fa-cog fa-spin"></i>
-        </button>;
+        return (
+          <button className="btn btn-default" onClick={this.handleToggleSettings}>
+            <i className="fa fa-cog fa-spin"></i>
+          </button>
+        );
       } else {
-        <button className="btn btn-default" onClick={this.handleToggleSettings}>
-          <i className="fa fa-cog"></i>
-        </button>;
+        return (
+          <button className="btn btn-default" onClick={this.handleToggleSettings}>
+            <i className="fa fa-cog"></i>
+          </button>
+        );
       }
     }.bind(this);
     

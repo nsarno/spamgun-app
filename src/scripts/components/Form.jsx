@@ -23,7 +23,7 @@ var Field = React.createClass({
   render: function() {
     var label = function() {
       if (this.props.label) {
-        var label = <label htmlFor={this.props.id}>{this.props.label}</label>;
+        return (<label htmlFor={this.props.id}>{this.props.label}</label>);
       }
     }.bind(this);
 
