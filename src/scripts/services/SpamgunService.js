@@ -45,8 +45,8 @@ class SpamgunService extends BaseService {
     // @endif
   }
 
-  login(email, password, success, failure) {
-    var data = {auth: {email: email, password: password }};
+  login(username, password, success, failure) {
+    var data = {auth: {username: username, password: password }};
     this.post('/knock/auth_token', data, success, failure);
   }
 
